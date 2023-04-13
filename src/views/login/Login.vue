@@ -1,5 +1,8 @@
 <script lang="ts" setup></script>
 
 <template>
-  <h1>Login</h1>
+  <a-row>
+    <a-col :span="12">hello</a-col>
+    <a-col :span="12">hello</a-col>
+  </a-row>
 </template>
