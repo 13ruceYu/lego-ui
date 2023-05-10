@@ -1,5 +1,12 @@
 <script lang="ts" setup>
 import { useEditorStore } from '@/store/editor/editor'
+import LText from '@/components/LText.vue'
+
+interface compMap {
+  [key: string]: object
+}
+
+const localComps: compMap = { 'l-text': LText }
 
 const editorStore = useEditorStore()
 </script>
@@ -13,8 +20,15 @@ const editorStore = useEditorStore()
     </div>
     <div class="canvas flex-1 border-2 border-red-400">
       <h1>canvas</h1>
-      <div v-for="(comp, index) in editorStore.$state.components" :key="index">
-        {{ comp.props.text }}
+      <div class="frame w-80 h-96 bg-slate-200 m-auto relative">
+        <component
+          :is="localComps[comp.name]"
+          v-for="(comp, index) in editorStore.$state.components"
+          :key="index"
+          v-bind="comp.props"
+        >
+          {{ comp.props.text }}
+        </component>
       </div>
     </div>
     <div class="attr-panel w-60 border-2 border-green-400">attr panel</div>

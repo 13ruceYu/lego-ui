@@ -16,8 +16,8 @@ export interface EditorProps {
 }
 
 export const testComponents: ComponentData[] = [
-  { id: uuidv4(), name: 'l-text', props: { text: 'hello' } },
-  { id: uuidv4(), name: 'l-text', props: { text: 'world' } }
+  { id: uuidv4(), name: 'l-text', props: { text: 'hello', fontSize: '36px' } },
+  { id: uuidv4(), name: 'l-text', props: { text: 'world', color: 'pink' } }
 ]
 
 export const useEditorStore = defineStore({
