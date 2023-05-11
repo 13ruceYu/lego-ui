@@ -1,9 +1,5 @@
 <script lang="ts" setup>
-import {
-  textDefaultProps,
-  textStylePropNames,
-  transformToComponentProps
-} from '@/constants/defaultProps'
+import { textDefaultProps, textStylePropNames, transformToComponentProps } from '@/constants/defaultProps'
 import useComponentCommon from '@/hooks/useComponentCommon'
 
 const props = defineProps({
@@ -14,10 +10,7 @@ const props = defineProps({
   ...transformToComponentProps(textDefaultProps)
 })
 
-const { styleProps, handleClick } = useComponentCommon(
-  props,
-  textStylePropNames
-)
+const { styleProps, handleClick } = useComponentCommon(props, textStylePropNames)
 </script>
 
 <template>

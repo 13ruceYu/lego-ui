@@ -35,5 +35,15 @@ export const useEditorStore = defineStore({
   state: (): EditorProps => ({
     components: testComponents,
     currentElement: ''
-  })
+  }),
+  actions: {
+    addComponent(props: any) {
+      const newComponent: ComponentData = {
+        id: uuidv4(),
+        name: 'l-text',
+        props
+      }
+      this.components.push(newComponent)
+    }
+  }
 })
