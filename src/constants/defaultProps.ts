@@ -86,20 +86,13 @@ export const textStylePropNames = without(
   'text'
 )
 
-type ComponentProps<T> = {
-  [K in keyof T]: {
-    type: new (...args: any[]) => T[K]
-    default: T[K]
-  }
-}
-
 export function transformToComponentProps<T extends Record<string, any>>(
   props: T
-): ComponentProps<T> {
+) {
   return mapValues(props, (item) => {
     return {
       type: item.constructor,
       default: item
     }
-  }) as ComponentProps<T>
+  })
 }

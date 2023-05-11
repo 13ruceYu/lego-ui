@@ -17,7 +17,17 @@ export interface EditorProps {
 
 export const testComponents: ComponentData[] = [
   { id: uuidv4(), name: 'l-text', props: { text: 'hello', fontSize: '36px' } },
-  { id: uuidv4(), name: 'l-text', props: { text: 'world', color: 'pink' } }
+  { id: uuidv4(), name: 'l-text', props: { text: 'world', color: 'pink' } },
+  {
+    id: uuidv4(),
+    name: 'l-text',
+    props: {
+      text: 'go to google',
+      color: 'green',
+      actionType: 'url',
+      url: 'https://google.com'
+    }
+  }
 ]
 
 export const useEditorStore = defineStore({
