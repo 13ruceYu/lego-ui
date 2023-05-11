@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { v4 as uuidv4 } from 'uuid'
+import type { TextComponentProps } from '@/constants/defaultProps'
 
 interface ComponentData {
   props: { [key: string]: any }
@@ -37,7 +38,7 @@ export const useEditorStore = defineStore({
     currentElement: ''
   }),
   actions: {
-    addComponent(props: any) {
+    addComponent(props: Partial<TextComponentProps>) {
       const newComponent: ComponentData = {
         id: uuidv4(),
         name: 'l-text',
