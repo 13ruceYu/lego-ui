@@ -37,6 +37,11 @@ export const useEditorStore = defineStore({
     components: testComponents,
     currentElement: ''
   }),
+  getters: {
+    getCurrentElement(state) {
+      return state.components.find((comp) => comp.id === state.currentElement)
+    }
+  },
   actions: {
     addComponent(props: Partial<TextComponentProps>) {
       const newComponent: ComponentData = {
@@ -45,6 +50,9 @@ export const useEditorStore = defineStore({
         props
       }
       this.components.push(newComponent)
+    },
+    setActive(id: string) {
+      this.currentElement = id
     }
   }
 })
