@@ -25,15 +25,16 @@ const finalProps = computed(() => {
       }
       return result
     },
-    {} as PropsToForms
+    {} as Required<PropsToForms>
   )
 })
 </script>
 
 <template>
   <div class="props-table">
-    <div v-for="(value, key) in finalProps" :key="key" class="prop-item">
-      <component :is="value.component" v-if="value" :value="value.value"></component>
+    <div v-for="(value, key) in finalProps" :key="key" class="prop-item flex mb-2">
+      <div class="label flex-shrink-0 mr-2 leading-8">{{ value.text }}</div>
+      <component :is="value.component" v-if="value" :value="value.value" v-bind="value.extraProps"></component>
     </div>
   </div>
 </template>
