@@ -20,7 +20,7 @@ const finalProps = computed(() => {
       const newKey = key as keyof TextComponentProps
       const item = mapPropsToForms[newKey]
       if (item) {
-        item.value = value
+        item.value = item.initialTransform ? item.initialTransform(value) : value
         result[newKey] = item
       }
       return result
@@ -34,7 +34,13 @@ const finalProps = computed(() => {
   <div class="props-table">
     <div v-for="(value, key) in finalProps" :key="key" class="prop-item flex mb-2">
       <div class="label flex-shrink-0 mr-2 leading-8">{{ value.text }}</div>
-      <component :is="value.component" v-if="value" :value="value.value" v-bind="value.extraProps"></component>
+      <component :is="value.component" v-if="value" :value="value.value" v-bind="value.extraProps" class="grow">
+        <template v-if="value.options && value.subComponent">
+          <component :is="value.subComponent" v-for="(option, k) in value.options" :key="k" :value="option.value">{{
+            option.text
+          }}</component>
+        </template>
+      </component>
     </div>
   </div>
 </template>

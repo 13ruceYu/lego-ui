@@ -27,10 +27,11 @@ function setActive(id: string) {
 <template>
   <div class="editor [&>*]:m-2 flex justify-between h-screen border-2 border-blue-400">
     <div class="component-list w-60 border-2 border-yellow-400">
+      <h1>组件列表</h1>
       <ComponentsList :list="defaultTextTemplates" @on-item-click="addItem"></ComponentsList>
     </div>
     <div class="canvas flex-1 border-2 border-red-400">
-      <h1>canvas</h1>
+      <h1>画布</h1>
       <div class="frame w-80 h-96 bg-slate-200 m-auto relative">
         <EditWrapper
           v-for="(comp, index) in editorStore.$state.components"
@@ -45,7 +46,7 @@ function setActive(id: string) {
       </div>
     </div>
     <div class="attr-panel w-60 border-2 border-green-400">
-      <h1>当前组件</h1>
+      <h1>组件属性</h1>
       <PropsTable v-if="currentElement && currentElement.props" :props="currentElement.props"></PropsTable>
       <pre>
         {{ currentElement?.props }}

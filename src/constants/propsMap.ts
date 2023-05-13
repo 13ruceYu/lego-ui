@@ -5,6 +5,9 @@ export interface PropToForm {
   value?: string
   extraProps?: { [key: string]: any }
   text: string
+  subComponent?: string
+  options?: { text: string; value: any }[]
+  initialTransform?: (v: any) => any
 }
 
 export type PropsToForms = {
@@ -24,6 +27,17 @@ export const mapPropsToForms: PropsToForms = {
   lineHeight: {
     component: 'a-slider',
     extraProps: { min: 0, max: 3, step: 0.1 },
-    text: '行高'
+    text: '行高',
+    initialTransform: (v: string) => parseFloat(v)
+  },
+  textAlign: {
+    component: 'a-radio-group',
+    text: '对齐',
+    subComponent: 'a-radio-button',
+    options: [
+      { value: 'left', text: '左' },
+      { value: 'right', text: '右' },
+      { value: 'center', text: '中' }
+    ]
   }
 }
