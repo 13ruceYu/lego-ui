@@ -8,14 +8,14 @@ export const defaultTextTemplates = [
   },
   {
     text: '正文内容',
-    tag: 'p',
+    tag: 'div',
     width: '100px'
   },
   {
     text: '链接内容',
     color: '#1890ff',
     textDecoration: 'underline',
-    tag: 'p',
+    tag: 'div',
     width: '100px'
   },
   {

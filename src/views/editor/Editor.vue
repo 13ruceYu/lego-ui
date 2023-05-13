@@ -4,6 +4,7 @@ import { useEditorStore } from '@/store/editor/editor'
 import LText from '@/components/LText.vue'
 import ComponentsList from '@/components/ComponentsList.vue'
 import EditWrapper from '@/components/EditWrapper.vue'
+import PropsTable from '@/components/PropsTable.vue'
 import { defaultTextTemplates } from '@/constants/defaultTemplates'
 
 interface compMap {
@@ -45,6 +46,7 @@ function setActive(id: string) {
     </div>
     <div class="attr-panel w-60 border-2 border-green-400">
       <h1>当前组件</h1>
+      <PropsTable v-if="currentElement && currentElement.props" :props="currentElement.props"></PropsTable>
       <pre>
         {{ currentElement?.props }}
       </pre>
