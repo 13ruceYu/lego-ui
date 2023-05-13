@@ -18,13 +18,13 @@ function onItemClick(id: string) {
 </script>
 
 <template>
-  <div class="edit-wrapper" :class="[active && 'active']" @click="onItemClick(props.id)">
+  <div class="edit-wrapper" :class="[active && 'outline outline-1 outline-pink-500']" @click="onItemClick(props.id)">
     <slot></slot>
   </div>
 </template>
 
 <style scoped>
-.active {
-  border: 1px solid pink;
+.edit-wrapper:hover {
+  outline: 1px dashed cyan;
 }
 </style>

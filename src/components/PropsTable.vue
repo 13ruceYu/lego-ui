@@ -21,6 +21,7 @@ const finalProps = computed(() => {
       const item = mapPropsToForms[newKey]
       if (item) {
         item.value = item.initialTransform ? item.initialTransform(value) : value
+        item.valueProp = item.valueProp ? item.valueProp : 'value'
         result[newKey] = item
       }
       return result
@@ -28,15 +29,25 @@ const finalProps = computed(() => {
     {} as Required<PropsToForms>
   )
 })
+
+function returnString(val: any): string {
+  return `${val}`
+}
 </script>
 
 <template>
   <div class="props-table">
-    <div v-for="(value, key) in finalProps" :key="key" class="prop-item flex mb-2">
-      <div class="label flex-shrink-0 mr-2 leading-8">{{ value.text }}</div>
-      <component :is="value.component" v-if="value" :value="value.value" v-bind="value.extraProps" class="grow">
-        <template v-if="value.options && value.subComponent">
-          <component :is="value.subComponent" v-for="(option, k) in value.options" :key="k" :value="option.value">{{
+    <div v-for="(item, key) in finalProps" :key="key" class="prop-item flex mb-2">
+      <div class="label flex-shrink-0 mr-2 leading-8">{{ item.text }}</div>
+      <component
+        :is="item.component"
+        v-if="item"
+        :[returnString(item.valueProp)]="item.value"
+        v-bind="item.extraProps"
+        class="grow"
+      >
+        <template v-if="item.options && item.subComponent">
+          <component :is="item.subComponent" v-for="(option, k) in item.options" :key="k" :value="option.value">{{
             option.text
           }}</component>
         </template>
