@@ -22,6 +22,10 @@ function addItem(props: any) {
 function setActive(id: string) {
   editorStore.setActive(id)
 }
+
+function handleChange(e: any) {
+  console.log('event---', e)
+}
 </script>
 
 <template>
@@ -47,7 +51,11 @@ function setActive(id: string) {
     </div>
     <div class="attr-panel w-60 border-2 border-green-400">
       <h1>组件属性</h1>
-      <PropsTable v-if="currentElement && currentElement.props" :props="currentElement.props"></PropsTable>
+      <PropsTable
+        v-if="currentElement && currentElement.props"
+        :props="currentElement.props"
+        @change="handleChange"
+      ></PropsTable>
       <pre>
         {{ currentElement?.props }}
       </pre>
