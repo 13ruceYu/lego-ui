@@ -7,6 +7,7 @@ export interface PropToForm {
   subComponent?: string
   options?: { text: string; value: any }[]
   initialTransform?: (v: any) => any
+  afterTransform?: (v: any) => any
   valueProp?: string
   eventName?: string
 }
@@ -19,11 +20,14 @@ export const mapPropsToForms: PropsToForms = {
   text: {
     component: 'a-textarea',
     extraProps: { rows: 3 },
-    text: '文本'
+    text: '文本',
+    afterTransform: (e: any) => e.target.value
   },
   fontSize: {
     component: 'a-input-number',
-    text: '字体'
+    text: '字体',
+    initialTransform: (v: string) => parseInt(v),
+    afterTransform: (e: number) => (e ? `${e}px` : '')
   },
   lineHeight: {
     component: 'a-slider',
@@ -37,8 +41,9 @@ export const mapPropsToForms: PropsToForms = {
     subComponent: 'a-radio-button',
     options: [
       { value: 'left', text: '左' },
-      { value: 'right', text: '右' },
-      { value: 'center', text: '中' }
-    ]
+      { value: 'center', text: '中' },
+      { value: 'right', text: '右' }
+    ],
+    afterTransform: (e: any) => e.target.value
   }
 }

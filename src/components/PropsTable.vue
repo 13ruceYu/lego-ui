@@ -34,14 +34,14 @@ const finalProps = computed(() => {
       const newKey = key as keyof TextComponentProps
       const item = mapPropsToForms[newKey]
       if (item) {
-        const { valueProp = 'value', eventName = 'change', initialTransform } = item
+        const { valueProp = 'value', eventName = 'change', initialTransform, afterTransform } = item
         const newItem: FormProps = {
           ...item,
-          value: initialTransform ? initialTransform(value) : 'value',
+          value: initialTransform ? initialTransform(value) : value,
           valueProp,
           eventName,
           events: {
-            [eventName]: (e: any) => emits('change', { key, value: e })
+            [eventName]: (e: any) => emits('change', { key, value: afterTransform ? afterTransform(e) : e })
           }
         }
         result[newKey] = newItem

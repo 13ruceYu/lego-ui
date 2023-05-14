@@ -53,6 +53,12 @@ export const useEditorStore = defineStore({
     },
     setActive(id: string) {
       this.currentElement = id
+    },
+    updateComponent(key: string, value: any) {
+      const updatedComponent = this.components.find((comp) => comp.id === this.currentElement)
+      if (updatedComponent) {
+        updatedComponent.props[key] = value
+      }
     }
   }
 })

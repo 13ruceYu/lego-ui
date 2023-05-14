@@ -24,7 +24,8 @@ function setActive(id: string) {
 }
 
 function handleChange(e: any) {
-  console.log('event---', e)
+  const { key, value } = e
+  editorStore.updateComponent(key, value)
 }
 </script>
 
