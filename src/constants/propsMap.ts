@@ -45,5 +45,16 @@ export const mapPropsToForms: PropsToForms = {
       { value: 'right', text: '右' }
     ],
     afterTransform: (e: any) => e.target.value
+  },
+  fontFamily: {
+    component: 'a-select',
+    text: '字体',
+    subComponent: 'a-select-option',
+    options: [
+      { text: '无', value: '' },
+      { text: '宋体', value: '"SimSun","STSong"' },
+      { text: '黑体', value: '"SimHei","STHeiTi"' },
+      { text: '楷体', value: '"KaiTi", "STKaiTi"' }
+    ]
   }
 }

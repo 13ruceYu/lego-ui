@@ -18,7 +18,7 @@ export interface EditorProps {
 
 export const testComponents: ComponentData[] = [
   { id: uuidv4(), name: 'l-text', props: { text: 'hello', fontSize: '36px', lineHeight: '1', textAlign: 'left' } },
-  { id: uuidv4(), name: 'l-text', props: { text: 'world', color: 'pink', lineHeight: '2' } },
+  { id: uuidv4(), name: 'l-text', props: { text: 'world', color: 'pink', lineHeight: '2', fontFamily: '' } },
   {
     id: uuidv4(),
     name: 'l-text',
