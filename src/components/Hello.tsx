@@ -1,11 +1,9 @@
-// MyComponent.tsx
-import type { PropType } from 'vue'
 import { defineComponent } from 'vue'
 
 export default defineComponent({
   props: {
     name: {
-      type: String as PropType<string>,
+      type: String,
       required: true
     }
   },

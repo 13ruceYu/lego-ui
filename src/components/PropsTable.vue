@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import type { PropType } from 'vue'
+import type { PropType, VNode } from 'vue'
 import { computed } from 'vue'
 import { reduce } from 'lodash'
+import PropsTableItemComponent from './PropsTableItemComponent'
 import type { TextComponentProps } from '@/constants/defaultProps'
 import { mapPropsToForms } from '@/constants/propsMap'
 
@@ -20,7 +21,7 @@ interface FormProps {
   value: string
   text: string
   subComponent?: string
-  options?: { text: string; value: any }[]
+  options?: { text: string | VNode; value: any }[]
   initialTransform?: (v: any) => any
   valueProp: string
   eventName: string
@@ -57,7 +58,7 @@ const finalProps = computed(() => {
   <div class="props-table">
     <div v-for="(item, key) in finalProps" :key="key" class="prop-item flex mb-2">
       <div class="label flex-shrink-0 mr-2 leading-8">{{ item.text }}</div>
-      <component
+      <!-- <component
         :is="item.component"
         v-if="item"
         :[item.valueProp]="item.value"
@@ -70,7 +71,8 @@ const finalProps = computed(() => {
             option.text
           }}</component>
         </template>
-      </component>
+      </component> -->
+      <PropsTableItemComponent v-if="item" class="grow" :final-props-item="item"></PropsTableItemComponent>
     </div>
   </div>
 </template>
