@@ -72,5 +72,11 @@ export const mapPropsToForms: PropsToForms = {
       // { text: '黑体', value: '"SimHei","STHeiTi"' },
       // { text: '楷体', value: '"KaiTi", "STKaiTi"' }
     ]
+  },
+  opacity: {
+    component: 'a-input-number',
+    text: '不透明度',
+    extraProps: { min: 0, max: 1, step: 0.1 },
+    afterTransform: (e: number) => (e ? `${e}` : '')
   }
 }

@@ -27,6 +27,10 @@ function handleChange(e: any) {
   const { key, value } = e
   editorStore.updateComponent(key, value)
 }
+
+function removeCurrentElement() {
+  currentElement.value && editorStore.removeComponent(currentElement.value.id)
+}
 </script>
 
 <template>
@@ -60,6 +64,7 @@ function handleChange(e: any) {
       <pre>
         {{ currentElement?.props }}
       </pre>
+      <a-button v-show="currentElement" type="danger" size="small" @click="removeCurrentElement">删除</a-button>
     </div>
   </div>
 </template>

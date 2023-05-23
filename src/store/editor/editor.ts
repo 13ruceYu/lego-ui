@@ -17,7 +17,11 @@ export interface EditorProps {
 }
 
 export const testComponents: ComponentData[] = [
-  { id: uuidv4(), name: 'l-text', props: { text: 'hello', fontSize: '36px', lineHeight: '1', textAlign: 'left' } },
+  {
+    id: uuidv4(),
+    name: 'l-text',
+    props: { text: 'hello', fontSize: '36px', lineHeight: '1', textAlign: 'left', opacity: '0.5' }
+  },
   { id: uuidv4(), name: 'l-text', props: { text: 'world', color: 'pink', lineHeight: '2', fontFamily: '' } },
   {
     id: uuidv4(),
@@ -59,6 +63,9 @@ export const useEditorStore = defineStore({
       if (updatedComponent) {
         updatedComponent.props[key] = value
       }
+    },
+    removeComponent(id: string) {
+      this.components = this.components.filter((comp) => comp.id !== id)
     }
   }
 })
