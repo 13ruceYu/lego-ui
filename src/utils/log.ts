@@ -1,6 +1,6 @@
 const log = {
-  capsule: (unusedTitle: string, unusedText: string, unusedType?: string) => {},
-  error: (unusedInfo: any) => {}
+  capsule: (_unusedTitle: string, _unusedText: string, _unusedType?: string) => {},
+  error: (_unusedInfo: any) => {}
 }
 
 /**
@@ -39,9 +39,7 @@ log.capsule = (title: string, text: string, type = 'primary') => {
   console.log(
     `%c ${title} %c ${text} %c`,
     'background:#35495E; padding: 2px ; border-radius: 3px 0 0 3px; color: #fff;',
-    `background:${typeColor(
-      type
-    )}; padding: 2px; border-radius: 0 3px 3px 0;  color: #fff;`,
+    `background:${typeColor(type)}; padding: 2px; border-radius: 0 3px 3px 0;  color: #fff;`,
     'background:transparent'
   )
 }

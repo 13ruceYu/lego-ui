@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest"
   },
   "dependencies": {
     "@ant-design/icons-vue": "^6.1.0",
@@ -29,17 +30,20 @@
     "@typescript-eslint/parser": "^5.57.1",
     "@vitejs/plugin-vue": "^4.1.0",
     "@vitejs/plugin-vue-jsx": "^3.0.1",
+    "@vue/test-utils": "^2.3.2",
     "autoprefixer": "^10.4.14",
     "eslint": "^8.38.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-vue": "^9.10.0",
+    "jsdom": "^22.0.0",
     "postcss": "^8.4.21",
     "prettier": "^2.8.7",
     "sass": "^1.62.0",
     "tailwindcss": "^3.3.1",
     "typescript": "5",
     "vite": "^4.2.0",
+    "vitest": "^0.31.1",
     "vue-eslint-parser": "^9.1.1",
     "vue-tsc": "^1.2.0"
   }
