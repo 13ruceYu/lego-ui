@@ -9,23 +9,23 @@ export default defineConfig({
   plugins: [vue(), vueJsx()],
   resolve: {
     alias: {
-      '@/': `${path.resolve(__dirname, 'src')}/`
-    }
+      '@/': `${path.resolve(__dirname, 'src')}/`,
+    },
   },
   // https://github.com/vitest-dev/vitest
   test: {
     include: ['test/**/*.test.ts'],
     environment: 'jsdom',
     deps: {
-      inline: ['@vue']
-    }
+      inline: ['@vue'],
+    },
   },
   server: {
     proxy: {
       '/api': {
         target: 'http://182.92.168.192:8081',
-        changeOrigin: true
-      }
-    }
-  }
+        changeOrigin: true,
+      },
+    },
+  },
 })
