@@ -3,9 +3,9 @@ import routes from './routes'
 
 const router = createRouter({
   history: createWebHistory(
-    import.meta.env.MODE === 'production' ? '/dolphinscheduler/ui/' : '/'
+    import.meta.env.MODE === 'production' ? '/dolphinscheduler/ui/' : '/',
   ),
-  routes
+  routes,
 })
 
 export default router

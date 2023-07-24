@@ -4,12 +4,12 @@ const RenderVNode = defineComponent({
   props: {
     customNode: {
       type: [Object, String],
-      required: true
-    }
+      required: true,
+    },
   },
   render() {
     return this.customNode
-  }
+  },
 })
 
 export default RenderVNode

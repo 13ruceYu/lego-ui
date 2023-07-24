@@ -5,9 +5,9 @@ import useComponentCommon from '@/hooks/useComponentCommon'
 const props = defineProps({
   tag: {
     type: String,
-    default: 'div'
+    default: 'div',
   },
-  ...transformToComponentProps(textDefaultProps)
+  ...transformToComponentProps(textDefaultProps),
 })
 
 const { styleProps, handleClick } = useComponentCommon(props, textStylePropNames)
@@ -20,6 +20,7 @@ const { styleProps, handleClick } = useComponentCommon(props, textStylePropNames
     class="l-text-component"
     style="position: relative"
     @click="handleClick"
-    >{{ props.text }}</component
   >
+    {{ props.text }}
+  </component>
 </template>

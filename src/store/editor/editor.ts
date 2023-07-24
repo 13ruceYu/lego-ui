@@ -20,7 +20,7 @@ export const testComponents: ComponentData[] = [
   {
     id: uuidv4(),
     name: 'l-text',
-    props: { text: 'hello', fontSize: '36px', lineHeight: '1', textAlign: 'left', opacity: '0.5' }
+    props: { text: 'hello', fontSize: '36px', lineHeight: '1', textAlign: 'left', opacity: '0.5' },
   },
   { id: uuidv4(), name: 'l-text', props: { text: 'world', color: 'pink', lineHeight: '2', fontFamily: '' } },
   {
@@ -30,28 +30,28 @@ export const testComponents: ComponentData[] = [
       text: 'go to google',
       color: 'green',
       actionType: 'url',
-      url: 'https://google.com'
-    }
-  }
+      url: 'https://google.com',
+    },
+  },
 ]
 
 export const useEditorStore = defineStore({
   id: 'editor',
   state: (): EditorProps => ({
     components: testComponents,
-    currentElement: ''
+    currentElement: '',
   }),
   getters: {
     getCurrentElement(state) {
-      return state.components.find((comp) => comp.id === state.currentElement)
-    }
+      return state.components.find(comp => comp.id === state.currentElement)
+    },
   },
   actions: {
     addComponent(props: Partial<TextComponentProps>) {
       const newComponent: ComponentData = {
         id: uuidv4(),
         name: 'l-text',
-        props
+        props,
       }
       this.components.push(newComponent)
     },
@@ -59,13 +59,12 @@ export const useEditorStore = defineStore({
       this.currentElement = id
     },
     updateComponent(key: string, value: any) {
-      const updatedComponent = this.components.find((comp) => comp.id === this.currentElement)
-      if (updatedComponent) {
+      const updatedComponent = this.components.find(comp => comp.id === this.currentElement)
+      if (updatedComponent)
         updatedComponent.props[key] = value
-      }
     },
     removeComponent(id: string) {
-      this.components = this.components.filter((comp) => comp.id !== id)
-    }
-  }
+      this.components = this.components.filter(comp => comp.id !== id)
+    },
+  },
 })

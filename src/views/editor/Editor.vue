@@ -37,7 +37,7 @@ function removeCurrentElement() {
   <div class="editor [&>*]:m-2 flex justify-between h-screen border-2 border-blue-400">
     <div class="component-list w-60 border-2 border-yellow-400">
       <h1>组件列表</h1>
-      <ComponentsList :list="defaultTextTemplates" @on-item-click="addItem"></ComponentsList>
+      <ComponentsList :list="defaultTextTemplates" @on-item-click="addItem" />
     </div>
     <div class="canvas flex-1 border-2 border-red-400">
       <h1>画布</h1>
@@ -60,11 +60,13 @@ function removeCurrentElement() {
         v-if="currentElement && currentElement.props"
         :props="currentElement.props"
         @change="handleChange"
-      ></PropsTable>
+      />
       <pre>
         {{ currentElement?.props }}
       </pre>
-      <a-button v-show="currentElement" type="danger" size="small" @click="removeCurrentElement">删除</a-button>
+      <a-button v-show="currentElement" type="danger" size="small" @click="removeCurrentElement">
+        删除
+      </a-button>
     </div>
   </div>
 </template>

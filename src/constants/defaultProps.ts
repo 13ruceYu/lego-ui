@@ -48,7 +48,7 @@ export const commonDefaultProps: CommonComponentProps = {
   position: 'absolute',
   left: '0',
   top: '0',
-  right: '0'
+  right: '0',
 }
 
 export interface TextComponentProps extends CommonComponentProps {
@@ -76,7 +76,7 @@ export const textDefaultProps: TextComponentProps = {
   textAlign: 'left',
   color: '#000000',
   backgroundColor: '',
-  ...commonDefaultProps
+  ...commonDefaultProps,
 }
 
 export const textStylePropNames = without(Object.keys(textDefaultProps), 'actionType', 'url', 'text')
@@ -85,7 +85,7 @@ export function transformToComponentProps(props: TextComponentProps) {
   return mapValues(props, (item) => {
     return {
       type: item.constructor as StringConstructor,
-      default: item
+      default: item,
     }
   })
 }

@@ -4,19 +4,19 @@ export const defaultTextTemplates = [
     fontSize: '30px',
     fontWeight: 'bold',
     tag: 'h2',
-    width: '100px'
+    width: '100px',
   },
   {
     text: '正文内容',
     tag: 'div',
-    width: '100px'
+    width: '100px',
   },
   {
     text: '链接内容',
     color: '#1890ff',
     textDecoration: 'underline',
     tag: 'div',
-    width: '100px'
+    width: '100px',
   },
   {
     text: '按钮内容',
@@ -33,6 +33,6 @@ export const defaultTextTemplates = [
     width: '100px',
     tag: 'button',
     textAlign: 'center',
-    position: 'absolute'
-  }
+    position: 'absolute',
+  },
 ]

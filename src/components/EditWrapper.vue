@@ -2,12 +2,12 @@
 const props = defineProps({
   id: {
     type: String,
-    default: ''
+    default: '',
   },
   active: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 })
 
 const emits = defineEmits(['setActive'])
@@ -19,7 +19,7 @@ function onItemClick(id: string) {
 
 <template>
   <div class="edit-wrapper" :class="[active && 'outline outline-1 outline-pink-500']" @click="onItemClick(props.id)">
-    <slot></slot>
+    <slot />
   </div>
 </template>
 

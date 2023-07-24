@@ -4,8 +4,8 @@ export default defineComponent({
   props: {
     name: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
   render() {
     return (
@@ -13,5 +13,5 @@ export default defineComponent({
         <h1>Hello, {this.name}!</h1>
       </div>
     )
-  }
+  },
 })

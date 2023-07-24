@@ -5,6 +5,6 @@ export function getVerificationCode(data: VerificationCodeReq) {
   return axios<VerificationCodeRes>({
     url: '/users/genVeriCode',
     method: 'post',
-    data
+    data,
   })
 }

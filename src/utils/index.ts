@@ -1,7 +1,7 @@
 import log from './log'
 
 const utils = {
-  log
+  log,
 }
 
 export default utils

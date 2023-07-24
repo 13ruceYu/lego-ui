@@ -6,7 +6,7 @@ import { getVerificationCode } from '@/api/modules/login'
 
 const form = {
   cellphone: '',
-  verifyCode: ''
+  verifyCode: '',
 }
 const rules = {}
 const loginFormRef = ref(null)
@@ -24,7 +24,7 @@ async function getCode() {
 
 <template>
   <a-row class="h-screen">
-    <a-col :span="12" class="bg-slate-500"> </a-col>
+    <a-col :span="12" class="bg-slate-500" />
     <a-col :span="12" class="h-screen right-side">
       <a-form
         ref="loginFormRef"
@@ -34,19 +34,21 @@ async function getCode() {
         :rules="rules"
       >
         <h2>欢迎回来</h2>
-        <p class="subTitle">使用手机号码和验证码登录到慕课乐高</p>
+        <p class="subTitle">
+          使用手机号码和验证码登录到慕课乐高
+        </p>
         <a-form-item label="手机号码" required name="cellphone">
           <a-input v-model:value="form.cellphone" placeholder="手机号码">
-            <template #prefix
-              ><UserOutlined style="color: rgba(0, 0, 0, 0.25)"
-            /></template>
+            <template #prefix>
+              <UserOutlined style="color: rgba(0, 0, 0, 0.25)" />
+            </template>
           </a-input>
         </a-form-item>
         <a-form-item label="验证码" required name="verifyCode">
           <a-input v-model:value="form.verifyCode" placeholder="四位验证码">
-            <template #prefix
-              ><LockOutlined style="color: rgba(0, 0, 0, 0.25)"
-            /></template>
+            <template #prefix>
+              <LockOutlined style="color: rgba(0, 0, 0, 0.25)" />
+            </template>
           </a-input>
         </a-form-item>
         <a-form-item>

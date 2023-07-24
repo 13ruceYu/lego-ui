@@ -22,15 +22,15 @@ const mapToComponent = {
   'a-radio-group': Radio.Group,
   'a-radio-button': Radio.Button,
   'a-select': Select,
-  'a-select-option': Select.Option
+  'a-select-option': Select.Option,
 } as any
 
 export default defineComponent({
   props: {
     finalPropsItem: {
       type: Object as PropType<FormProps>,
-      default: () => ({})
-    }
+      default: () => ({}),
+    },
   },
   setup(props) {
     const compName = computed(() => props.finalPropsItem.component)
@@ -39,13 +39,13 @@ export default defineComponent({
     const compProps = computed(() => ({
       [props.finalPropsItem.valueProp]: props.finalPropsItem.value,
       ...props.finalPropsItem.extraProps,
-      ...props.finalPropsItem.events
+      ...props.finalPropsItem.events,
     }))
     return {
       compName,
       subCompName,
       compProps,
-      compOptions
+      compOptions,
     }
   },
   render() {
@@ -54,11 +54,11 @@ export default defineComponent({
     const SubComp = subCompName ? mapToComponent[subCompName] : null
     return (
       <Comp {...compProps}>
-        {compOptions &&
-          compOptions.map((option) => {
+        {compOptions
+          && compOptions.map((option) => {
             return <SubComp value={option.value}>{option.text}</SubComp>
           })}
       </Comp>
     )
-  }
+  },
 })

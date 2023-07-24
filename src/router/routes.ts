@@ -13,24 +13,24 @@ const basicPage: RouteRecordRaw[] = [
         meta: {
           title: '首页',
           activeMenu: 'home',
-          auth: []
-        }
+          auth: [],
+        },
       },
       {
         path: '/editor',
         name: 'editor',
         component: () => import('@/views/editor/Editor.vue'),
         meta: {
-          title: '编辑页面'
-        }
-      }
-    ]
+          title: '编辑页面',
+        },
+      },
+    ],
   },
   {
     path: '/login',
     name: 'login',
-    component: () => import('@/views/login/Login.vue')
-  }
+    component: () => import('@/views/login/Login.vue'),
+  },
 ]
 
 const routes: RouteRecordRaw[] = [...basicPage]

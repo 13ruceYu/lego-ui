@@ -10,8 +10,8 @@ import { mapPropsToForms } from '@/constants/propsMap'
 const props = defineProps({
   props: {
     type: Object as PropType<Partial<TextComponentProps>>,
-    required: true
-  }
+    required: true,
+  },
 })
 
 const emits = defineEmits(['change'])
@@ -43,14 +43,14 @@ const finalProps = computed(() => {
           valueProp,
           eventName,
           events: {
-            [eventName]: (e: any) => emits('change', { key, value: afterTransform ? afterTransform(e) : e })
-          }
+            [eventName]: (e: any) => emits('change', { key, value: afterTransform ? afterTransform(e) : e }),
+          },
         }
         result[newKey] = newItem
       }
       return result
     },
-    {} as { [key: string]: FormProps }
+    {} as { [key: string]: FormProps },
   )
 })
 </script>
@@ -58,7 +58,9 @@ const finalProps = computed(() => {
 <template>
   <div class="props-table">
     <div v-for="(item, key) in finalProps" :key="key" class="prop-item flex mb-2">
-      <div class="label flex-shrink-0 mr-2 leading-8">{{ item.text }}</div>
+      <div class="label flex-shrink-0 mr-2 leading-8">
+        {{ item.text }}
+      </div>
       <component
         :is="item.component"
         v-if="item"
@@ -69,7 +71,7 @@ const finalProps = computed(() => {
       >
         <template v-if="item.options && item.subComponent">
           <component :is="item.subComponent" v-for="(option, k) in item.options" :key="k" :value="option.value">
-            <RenderVNode :custom-node="option.text"></RenderVNode>
+            <RenderVNode :custom-node="option.text" />
           </component>
         </template>
       </component>

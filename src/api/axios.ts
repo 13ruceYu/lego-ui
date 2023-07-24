@@ -4,11 +4,11 @@ import qs from 'qs'
 import _ from 'lodash'
 // import cookies from 'js-cookie'
 // import { useUISettingStore } from '@/store/ui-setting/ui-setting'
-import { useUserStore } from '@/store/user/user'
+// import { useUserStore } from '@/store/user/user'
 import router from '@/router'
 import utils from '@/utils'
 
-const userStore = useUserStore()
+// const userStore = useUserStore()
 // const uiSettingStore = useUISettingStore()
 
 /**
@@ -31,15 +31,14 @@ const baseRequestConfig: AxiosRequestConfig = {
       : `${import.meta.env.VITE_APP_PROD_WEB_URL}/api`,
   // timeout: uiSettingStore.getApiTimer ? uiSettingStore.getApiTimer : 20000,
   transformRequest: (params) => {
-    if (_.isPlainObject(params)) {
+    if (_.isPlainObject(params))
       return qs.stringify(params, { arrayFormat: 'repeat' })
-    } else {
+    else
       return params
-    }
   },
   paramsSerializer: (params) => {
     return qs.stringify(params, { arrayFormat: 'repeat' })
-  }
+  },
 }
 
 const service = axios.create(baseRequestConfig)
@@ -67,9 +66,8 @@ service.interceptors.request.use((config) => {
 // The response to intercept
 service.interceptors.response.use((res: AxiosResponse) => {
   // No errno will be processed
-  if (res.data.errno === undefined) {
+  if (res.data.errno === undefined)
     return res.data
-  }
 
   switch (res.data.errno) {
     case 0:

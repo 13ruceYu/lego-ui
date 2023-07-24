@@ -1,6 +1,6 @@
 const log = {
   capsule: (_unusedTitle: string, _unusedText: string, _unusedType?: string) => {},
-  error: (_unusedInfo: any) => {}
+  error: (_unusedInfo: any) => {},
 }
 
 /**
@@ -40,7 +40,7 @@ log.capsule = (title: string, text: string, type = 'primary') => {
     `%c ${title} %c ${text} %c`,
     'background:#35495E; padding: 2px ; border-radius: 3px 0 0 3px; color: #fff;',
     `background:${typeColor(type)}; padding: 2px; border-radius: 0 3px 3px 0;  color: #fff;`,
-    'background:transparent'
+    'background:transparent',
   )
 }
 
