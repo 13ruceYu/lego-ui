@@ -1,11 +1,19 @@
 <script lang="ts">
+import type { PropType } from 'vue'
 import { defineComponent } from 'vue'
 import { useRouter } from 'vue-router'
 import { message } from 'ant-design-vue'
+import type { UserProps } from '@/store/user/user'
 import { useUserStore } from '@/store/user/user'
 
 export default defineComponent({
   name: 'UserProfile',
+  props: {
+    user: {
+      type: Object as PropType<UserProps>,
+      required: true,
+    },
+  },
   setup() {
     const userStore = useUserStore()
     const router = useRouter()
@@ -31,7 +39,7 @@ export default defineComponent({
 
 <template>
   <a-button
-    v-if="!userStore.isLogin" type="primary"
+    v-if="!user.isLogin" type="primary"
     class="btn-login"
     @click="login"
   >
@@ -40,7 +48,7 @@ export default defineComponent({
   <div v-else>
     <a-dropdown-button class="user-profile-component">
       <router-link to="/setting">
-        {{ userStore.userName }}
+        {{ user.userName }}
       </router-link>
       <template #overlay>
         <a-menu class="user-profile-dropdown">
