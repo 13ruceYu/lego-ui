@@ -85,6 +85,9 @@ devDependencies:
   prettier:
     specifier: ^2.8.7
     version: 2.8.7
+  rgb-hex:
+    specifier: ^4.0.1
+    version: 4.0.1
   sass:
     specifier: ^1.62.0
     version: 1.62.0
@@ -3828,6 +3831,11 @@ packages:
   /reusify@1.0.4:
     resolution: {integrity: sha512-U9nH88a3fc/ekCF1l0/UP1IosiuIjyTh7hBvXVMHYgVcfGvt897Xguj2UOLDeI5BG2m7/uwyaLVT6fbtCwTyzw==}
     engines: {iojs: '>=1.0.0', node: '>=0.10.0'}
+    dev: true
+
+  /rgb-hex@4.0.1:
+    resolution: {integrity: sha512-HcNmN4252k7YgL1tlMatonEAJQlDrc1lt6UPjMO6xFD/DO6gX+NJz4EKRRZ9/I9nYUzVel6zhTJ5y3wdfSgJEQ==}
+    engines: {node: '>=12'}
     dev: true
 
   /rimraf@3.0.2:
