@@ -3,6 +3,7 @@ import type { PropType, VNode } from 'vue'
 import { computed } from 'vue'
 import { reduce } from 'lodash'
 // import PropsTableItemComponent from './PropsTableItemComponent'
+import ColorPicker from './ColorPicker.vue'
 import RenderVNode from './RenderVNode'
 import type { TextComponentProps } from '@/constants/defaultProps'
 import { mapPropsToForms } from '@/constants/propsMap'
@@ -15,6 +16,10 @@ const props = defineProps({
 })
 
 const emits = defineEmits(['change'])
+
+defineOptions({
+  components: { ColorPicker },
+})
 
 interface FormProps {
   component: string
@@ -62,11 +67,7 @@ const finalProps = computed(() => {
         {{ item.text }}
       </div>
       <component
-        :is="item.component"
-        v-if="item"
-        :[item.valueProp]="item.value"
-        v-bind="item.extraProps"
-        class="grow"
+        :is="item.component" v-if="item" :[item.valueProp]="item.value" v-bind="item.extraProps" class="grow"
         v-on="item.events"
       >
         <template v-if="item.options && item.subComponent">

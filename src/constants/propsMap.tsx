@@ -79,4 +79,8 @@ export const mapPropsToForms: PropsToForms = {
     extraProps: { min: 0, max: 1, step: 0.1 },
     afterTransform: (e: number) => (e ? `${e}` : ''),
   },
+  color: {
+    component: 'color-picker',
+    text: '字体颜色',
+  },
 }
