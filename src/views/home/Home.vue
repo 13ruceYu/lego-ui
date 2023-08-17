@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import Hello from '@/components/Hello'
+import Uploader from '@/components/Uploader.vue'
 </script>
 
 <template>
@@ -12,4 +13,5 @@ import Hello from '@/components/Hello'
     </div>
   </nav>
   <Hello name="hello" />
+  <Uploader action="" />
 </template>
