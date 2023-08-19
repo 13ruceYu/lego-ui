@@ -1,10 +1,19 @@
-import { flushPromises, mount } from '@vue/test-utils'
+import { flushPromises, mount, shallowMount } from '@vue/test-utils'
 import type { MockedFunction } from 'vitest'
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import axios from 'axios'
 import Uploader from '@/components/Uploader.vue'
 
 vi.mock('axios')
+
+const testFile = new File(['xyz'], 'test.png', { type: 'image/png' })
+
+function setInputValue(fileInput: HTMLInputElement, file: File): void {
+  Object.defineProperty(fileInput, 'files', {
+    value: [file],
+    writable: false,
+  })
+}
 
 describe('Uploader Component', () => {
   expect(Uploader).toBeTruthy()
@@ -15,25 +24,25 @@ describe('Uploader Component', () => {
     },
   })
 
+  afterEach(() => {
+    (axios.post as MockedFunction<typeof axios.post>).mockReset()
+  })
+
   it('basic layout before uploading', () => {
     expect(wrapper.find('button').exists()).toBeTruthy()
-    expect(wrapper.get('button span').text()).toBe('点击上传')
+    expect(wrapper.get('button').text()).toBe('点击上传')
     expect(wrapper.get('input').isVisible()).toBeFalsy()
   })
 
   it('upload process should work fine', async () => {
     const fileInput = wrapper.get('input').element as HTMLInputElement
-    const testFile = new File(['xyz'], 'test.png', { type: 'image/png' })
-    Object.defineProperty(fileInput, 'files', {
-      value: [testFile],
-      writable: false,
-    });
+    setInputValue(fileInput, testFile);
     (axios.post as MockedFunction<typeof axios.post>).mockResolvedValueOnce({
       status: 'success',
     })
     await wrapper.get('input').trigger('change')
     expect(axios.post).toHaveBeenCalledTimes(1)
-    expect(wrapper.get('button span').text()).toBe('正在上传')
+    expect(wrapper.get('button').text()).toBe('正在上传')
     // disable button
     expect(wrapper.get('button').attributes()).toHaveProperty('disabled')
     // change list with correct class name
@@ -41,7 +50,7 @@ describe('Uploader Component', () => {
     const firstLi = wrapper.get('li:first-child')
     expect(firstLi.classes()).toContain('upload-loading')
     await flushPromises()
-    expect(wrapper.get('button span').text()).toBe('点击上传')
+    expect(wrapper.get('button').text()).toBe('点击上传')
     // has correct class and filename
     expect(firstLi.classes()).toContain('upload-success')
     expect(firstLi.get('.filename').text()).toBe(testFile.name)
@@ -50,10 +59,10 @@ describe('Uploader Component', () => {
   it('should return error text when post is rejected', async () => {
     (axios.post as MockedFunction<typeof axios.post>).mockRejectedValueOnce({ error: 'error' })
     await wrapper.get('input').trigger('change')
-    expect(axios.post).toHaveBeenCalledTimes(2)
-    expect(wrapper.get('button span').text()).toBe('正在上传')
+    expect(axios.post).toHaveBeenCalledTimes(1)
+    expect(wrapper.get('button').text()).toBe('正在上传')
     await flushPromises()
-    expect(wrapper.get('button span').text()).toBe('点击上传')
+    expect(wrapper.get('button').text()).toBe('点击上传')
     // list increase, last item has correct class
     expect(wrapper.findAll('li').length).toBe(2)
     const lastLi = wrapper.get('li:last-child')
@@ -61,5 +70,100 @@ describe('Uploader Component', () => {
     // click button in li to delete
     await lastLi.get('.delete-icon').trigger('click')
     expect(wrapper.findAll('li').length).toBe(1)
+  })
+
+  it('should show the correct interface when use custom slot', async () => {
+    (axios.post as MockedFunction<typeof axios.post>).mockResolvedValueOnce({
+      data: { url: 'dummy.url' },
+    })
+    const wrapper = mount(Uploader, {
+      props: {
+        action: 'test.url',
+      },
+      slots: {
+        default: '<button>custom button</button>',
+        loading: '<div class="loading">custom loading</div>',
+        uploaded: `
+          <template #uploaded="{uploadedData}">
+            <div class="custom-loaded">{{uploadedData.url}}</div>
+          </template>
+        `,
+      },
+    })
+    expect(wrapper.get('button').text()).toBe('custom button')
+    const fileInput = wrapper.get('input').element as HTMLInputElement
+    setInputValue(fileInput, testFile)
+    await wrapper.get('input').trigger('change')
+    expect(wrapper.get('.loading').text()).toBe('custom loading')
+    await flushPromises()
+    expect(wrapper.get('.custom-loaded').text()).toBe('dummy.url')
+  })
+
+  it('before upload check', async () => {
+    const cb = vi.fn();
+    (axios.post as MockedFunction<typeof axios.post>).mockResolvedValueOnce({
+      data: { url: 'dummy.url' },
+    })
+    function checkFileSize(file: File) {
+      if (file.size > 2) {
+        cb()
+        return false
+      }
+      return true
+    }
+    const wrapper = shallowMount(Uploader, {
+      props: {
+        action: 'test.url',
+        beforeUpload: checkFileSize,
+      },
+    })
+    const fileInput = wrapper.get('input').element as HTMLInputElement
+    setInputValue(fileInput, testFile)
+    await wrapper.get('input').trigger('change')
+    expect(axios.post).not.toHaveBeenCalled()
+    expect(wrapper.findAll('li').length).toBe(0)
+    expect(cb).toHaveBeenCalled()
+  })
+
+  it('before upload check using Promise', async () => {
+    (axios.post as MockedFunction<typeof axios.post>).mockResolvedValueOnce({
+      data: { url: 'dummy.url' },
+    })
+    function failedPromise() {
+      // eslint-disable-next-line prefer-promise-reject-errors
+      return Promise.reject('wrong type')
+    }
+    function successPromise(file: File) {
+      const newFile = new File([file], 'new_file.docx', { type: file.type })
+      return Promise.resolve(newFile)
+    }
+    function successPromiseWithWrongType() {
+      return Promise.resolve('abcd')
+    }
+    const wrapper = shallowMount(Uploader, {
+      props: {
+        action: 'test.url',
+        beforeUpload: failedPromise,
+      },
+    })
+    const fileInput = wrapper.get('input').element as HTMLInputElement
+    setInputValue(fileInput, testFile)
+    await wrapper.get('input').trigger('change')
+    await flushPromises()
+    expect(axios.post).not.toHaveBeenCalled()
+    expect(wrapper.findAll('li').length).toBe(0)
+    // success promise with wrong file
+    await wrapper.setProps({ beforeUpload: successPromiseWithWrongType })
+    await wrapper.get('input').trigger('change')
+    await flushPromises()
+    expect(axios.post).not.toHaveBeenCalled()
+    // success promise with file
+    await wrapper.setProps({ beforeUpload: successPromise })
+    await wrapper.get('input').trigger('change')
+    await flushPromises()
+    expect(axios.post).toHaveBeenCalled()
+    const firstLi = wrapper.get('li:first-child')
+    expect(firstLi.classes()).toContain('upload-success')
+    expect(firstLi.get('.filename').text()).toBe('new_file.docx')
   })
 })
