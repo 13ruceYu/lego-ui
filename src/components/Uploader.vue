@@ -25,10 +25,26 @@ const props = defineProps({
   beforeUpload: {
     type: Function as PropType<TCheckUpload>,
   },
+  drag: {
+    type: Boolean,
+  },
 })
 
 const fileInput = ref<null | HTMLInputElement>(null)
 const uploadedFiles = ref<IUploadFile[]>([])
+const isDragOver = ref(false)
+
+let events: { [key: string]: (e: any) => void } = {
+  click: triggerUpload,
+}
+if (props.drag) {
+  events = {
+    ...events,
+    dragover: (e: DragEvent) => { handleDrag(e, true) },
+    dragleave: (e: DragEvent) => { handleDrag(e, false) },
+    drop: handleDrop,
+  }
+}
 
 const isUploading = computed(() => {
   return uploadedFiles.value.some(file => file.status === 'loading')
@@ -44,6 +60,18 @@ const lastFileData = computed(() => {
   }
   return false
 })
+
+function handleDrag(e: DragEvent, over: boolean) {
+  e.preventDefault()
+  isDragOver.value = over
+}
+
+function handleDrop(e: DragEvent) {
+  e.preventDefault()
+  isDragOver.value = false
+  if (e.dataTransfer)
+    uploadFiles(e.dataTransfer.files)
+}
 
 function triggerUpload() {
   if (fileInput.value)
@@ -75,9 +103,7 @@ function postFile(uploadedFile: File) {
   })
 }
 
-function handleFileChange(e: Event) {
-  const target = e.target as HTMLInputElement
-  const files = target.files
+function uploadFiles(files: null | FileList) {
   if (files) {
     const uploadedFile = files[0]
     if (props.beforeUpload) {
@@ -102,6 +128,12 @@ function handleFileChange(e: Event) {
   }
 }
 
+function handleFileChange(e: Event) {
+  const target = e.target as HTMLInputElement
+  const files = target.files
+  uploadFiles(files)
+}
+
 function removeFile(id: string) {
   uploadedFiles.value = uploadedFiles.value.filter(file => file.uid !== id)
 }
@@ -109,7 +141,7 @@ function removeFile(id: string) {
 
 <template>
   <div class="file-upload">
-    <div class="upload-area" @click="triggerUpload">
+    <div class="upload-area border border-gray-400 w-[200px] h-[100px]" :class="[drag && isDragOver ? 'is-dragover border-cyan-400 bg-cyan-300' : '']" v-on="events">
       <slot v-if="isUploading" name="loading">
         <button disabled>
           正在上传

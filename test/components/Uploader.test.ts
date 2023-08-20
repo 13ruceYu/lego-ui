@@ -166,4 +166,23 @@ describe('Uploader Component', () => {
     expect(firstLi.classes()).toContain('upload-success')
     expect(firstLi.get('.filename').text()).toBe('new_file.docx')
   })
+
+  it('test drag and drop function', async () => {
+    (axios.post as MockedFunction<typeof axios.post>).mockResolvedValueOnce({ data: { url: 'dummy.url' } })
+    const wrapper = shallowMount(Uploader, {
+      props: {
+        action: 'test.url',
+        drag: true,
+      },
+    })
+    const uploadArea = wrapper.get('.upload-area')
+    await uploadArea.trigger('dragover')
+    expect(uploadArea.classes()).toContain('is-dragover')
+    await uploadArea.trigger('dragleave')
+    expect(uploadArea.classes()).not.toContain('is-dragover')
+    await uploadArea.trigger('drop', { dataTransfer: { files: [testFile] } })
+    expect(axios.post).toHaveBeenCalled()
+    await flushPromises()
+    expect(wrapper.findAll('li').length).toBe(1)
+  })
 })

@@ -13,5 +13,5 @@ import Uploader from '@/components/Uploader.vue'
     </div>
   </nav>
   <Hello name="hello" />
-  <Uploader action="" />
+  <Uploader action="" drag />
 </template>
