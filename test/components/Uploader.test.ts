@@ -185,4 +185,25 @@ describe('Uploader Component', () => {
     await flushPromises()
     expect(wrapper.findAll('li').length).toBe(1)
   })
+
+  it('test manual upload process', async () => {
+    (axios.post as MockedFunction<typeof axios.post>).mockResolvedValueOnce({ data: { url: 'dummy.url' } })
+    const wrapper = shallowMount(Uploader, {
+      props: {
+        action: 'test.url',
+        drag: true,
+        autoUpload: false,
+      },
+    })
+    const fileInput = wrapper.get('input').element as HTMLInputElement
+    setInputValue(fileInput, testFile)
+    await wrapper.get('input').trigger('change')
+    expect(wrapper.findAll('li').length).toBe(1)
+    const firstLi = wrapper.get('li:first-child')
+    expect(firstLi.classes()).toContain('upload-ready')
+    wrapper.vm.uploadFiles()
+    expect(axios.post).toHaveBeenCalled()
+    await flushPromises()
+    expect(firstLi.classes()).toContain('upload-success')
+  })
 })

@@ -27,11 +27,20 @@ const props = defineProps({
   },
   drag: {
     type: Boolean,
+    default: false,
+  },
+  autoUpload: {
+    type: Boolean,
+    default: true,
   },
 })
 
+defineExpose({
+  uploadFiles,
+})
+
 const fileInput = ref<null | HTMLInputElement>(null)
-const uploadedFiles = ref<IUploadFile[]>([])
+const filesList = ref<IUploadFile[]>([])
 const isDragOver = ref(false)
 
 let events: { [key: string]: (e: any) => void } = {
@@ -47,11 +56,11 @@ if (props.drag) {
 }
 
 const isUploading = computed(() => {
-  return uploadedFiles.value.some(file => file.status === 'loading')
+  return filesList.value.some(file => file.status === 'loading')
 })
 
 const lastFileData = computed(() => {
-  const lastFile = last(uploadedFiles.value)
+  const lastFile = last(filesList.value)
   if (lastFile) {
     return {
       loaded: lastFile.status === 'success',
@@ -70,7 +79,7 @@ function handleDrop(e: DragEvent) {
   e.preventDefault()
   isDragOver.value = false
   if (e.dataTransfer)
-    uploadFiles(e.dataTransfer.files)
+    beforeUploadCheck(e.dataTransfer.files)
 }
 
 function triggerUpload() {
@@ -78,32 +87,43 @@ function triggerUpload() {
     fileInput.value.click()
 }
 
-function postFile(uploadedFile: File) {
+function postFile(readyFile: IUploadFile) {
   const formData = new FormData()
-  formData.append(uploadedFile.name, uploadedFile)
-  const fileObj = reactive<IUploadFile>({
-    uid: uuidv4(),
-    size: uploadedFile.size,
-    name: uploadedFile.name,
-    status: 'loading',
-    raw: uploadedFile,
-  })
-  uploadedFiles.value.push(fileObj)
+  formData.append(readyFile.name, readyFile.raw)
+  readyFile.status = 'loading'
   axios.post(props.action, formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
   }).then((resp) => {
-    fileObj.status = 'success'
-    fileObj.resp = resp.data
+    readyFile.status = 'success'
+    readyFile.resp = resp.data
   }).catch(() => {
-    fileObj.status = 'error'
+    readyFile.status = 'error'
   }).finally(() => {
     fileInput.value && (fileInput.value.value = '')
   })
 }
 
-function uploadFiles(files: null | FileList) {
+// addFileToList
+function addFileToList(uploadedFile: File) {
+  const fileObj = reactive<IUploadFile>({
+    uid: uuidv4(),
+    size: uploadedFile.size,
+    name: uploadedFile.name,
+    status: 'ready',
+    raw: uploadedFile,
+  })
+  filesList.value.push(fileObj)
+  if (props.autoUpload)
+    postFile(fileObj)
+}
+
+function uploadFiles() {
+  filesList.value.filter(file => file.status === 'ready').forEach(readyFile => postFile(readyFile))
+}
+
+function beforeUploadCheck(files: null | FileList) {
   if (files) {
     const uploadedFile = files[0]
     if (props.beforeUpload) {
@@ -111,7 +131,7 @@ function uploadFiles(files: null | FileList) {
       if (result && result instanceof Promise) {
         result.then((processedFile) => {
           if (processedFile instanceof File)
-            postFile(processedFile)
+            addFileToList(processedFile)
           else
             throw new Error('beforeUpload Promise should return File object')
         }).catch((e) => {
@@ -119,11 +139,11 @@ function uploadFiles(files: null | FileList) {
         })
       }
       else if (result === true) {
-        postFile(uploadedFile)
+        addFileToList(uploadedFile)
       }
     }
     else {
-      postFile(uploadedFile)
+      addFileToList(uploadedFile)
     }
   }
 }
@@ -131,11 +151,11 @@ function uploadFiles(files: null | FileList) {
 function handleFileChange(e: Event) {
   const target = e.target as HTMLInputElement
   const files = target.files
-  uploadFiles(files)
+  beforeUploadCheck(files)
 }
 
 function removeFile(id: string) {
-  uploadedFiles.value = uploadedFiles.value.filter(file => file.uid !== id)
+  filesList.value = filesList.value.filter(file => file.uid !== id)
 }
 </script>
 
@@ -156,7 +176,7 @@ function removeFile(id: string) {
     </div>
     <input ref="fileInput" type="file" style="display: none" @change="handleFileChange">
     <ul>
-      <li v-for="(file, index) in uploadedFiles" :key="index" class="flex justify-between" :class="`upload-${file.status}`">
+      <li v-for="(file, index) in filesList" :key="index" class="flex justify-between" :class="`upload-${file.status}`">
         <span class="filename">{{ file.name }}</span>
         <button class="delete-icon" @click="removeFile(file.uid)">
           <DeleteOutlined />
