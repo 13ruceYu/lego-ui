@@ -6,17 +6,6 @@ import { v4 as uuidv4 } from 'uuid'
 import { DeleteOutlined } from '@ant-design/icons-vue'
 import { last } from 'lodash'
 
-type TUploadStatus = 'ready' | 'loading' | 'success' | 'error'
-type TCheckUpload = (file: File) => boolean | Promise<File>
-interface IUploadFile {
-  uid: string
-  size: number
-  name: string
-  status: TUploadStatus
-  raw: File
-  resp?: any
-}
-
 const props = defineProps({
   action: {
     type: String,
@@ -33,11 +22,27 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  listType: {
+    type: String,
+    default: 'text',
+  },
 })
 
 defineExpose({
   uploadFiles,
 })
+
+type TUploadStatus = 'ready' | 'loading' | 'success' | 'error'
+type TCheckUpload = (file: File) => boolean | Promise<File>
+interface IUploadFile {
+  uid: string
+  size: number
+  name: string
+  status: TUploadStatus
+  raw: File
+  resp?: any
+  url?: string
+}
 
 const fileInput = ref<null | HTMLInputElement>(null)
 const filesList = ref<IUploadFile[]>([])
@@ -114,6 +119,14 @@ function addFileToList(uploadedFile: File) {
     status: 'ready',
     raw: uploadedFile,
   })
+  if (props.listType === 'picture') {
+    try {
+      fileObj.url = URL.createObjectURL(uploadedFile)
+    }
+    catch (error) {
+      console.error('upload File error', error)
+    }
+  }
   filesList.value.push(fileObj)
   if (props.autoUpload)
     postFile(fileObj)
@@ -175,8 +188,9 @@ function removeFile(id: string) {
       </slot>
     </div>
     <input ref="fileInput" type="file" style="display: none" @change="handleFileChange">
-    <ul>
+    <ul :class="`upload-list upload-list-${listType}`">
       <li v-for="(file, index) in filesList" :key="index" class="flex justify-between" :class="`upload-${file.status}`">
+        <span v-if="file.url"><img :src="file.url" :alt="file.name"></span>
         <span class="filename">{{ file.name }}</span>
         <button class="delete-icon" @click="removeFile(file.uid)">
           <DeleteOutlined />

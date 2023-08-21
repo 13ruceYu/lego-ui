@@ -206,4 +206,25 @@ describe('Uploader Component', () => {
     await flushPromises()
     expect(firstLi.classes()).toContain('upload-success')
   })
+  it('PictureList mode should work fine', async () => {
+    (axios.post as MockedFunction<typeof axios.post>).mockResolvedValueOnce({ data: { url: 'dummy.url' } })
+    window.URL.createObjectURL = vi.fn(() => {
+      return 'test.url'
+    })
+    const wrapper = shallowMount(Uploader, {
+      props: {
+        action: 'test.url',
+        listType: 'picture',
+      },
+    })
+    expect(wrapper.get('ul').classes()).toContain('upload-list-picture')
+    const fileInput = wrapper.get('input').element as HTMLInputElement
+    setInputValue(fileInput, testFile)
+    await wrapper.get('input').trigger('change')
+    await flushPromises()
+    expect(wrapper.findAll('li').length).toBe(1)
+    expect(wrapper.find('li:first-child img').exists()).toBeTruthy()
+    const firstImg = wrapper.get('li:first-child img')
+    expect(firstImg.attributes('src')).toEqual('test.url')
+  })
 })
