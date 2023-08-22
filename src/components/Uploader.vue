@@ -26,6 +26,10 @@ const props = defineProps({
     type: String,
     default: 'text',
   },
+  showUploadList: {
+    type: Boolean,
+    default: true,
+  },
 })
 
 defineExpose({
@@ -174,7 +178,7 @@ function removeFile(id: string) {
 
 <template>
   <div class="file-upload">
-    <div class="upload-area border border-gray-400 w-[200px] h-[100px]" :class="[drag && isDragOver ? 'is-dragover border-cyan-400 bg-cyan-300' : '']" v-on="events">
+    <div class="upload-area" :class="[drag && isDragOver ? 'is-dragover border-cyan-400 bg-cyan-300' : '']" v-on="events">
       <slot v-if="isUploading" name="loading">
         <button disabled>
           正在上传
@@ -188,7 +192,7 @@ function removeFile(id: string) {
       </slot>
     </div>
     <input ref="fileInput" type="file" style="display: none" @change="handleFileChange">
-    <ul :class="`upload-list upload-list-${listType}`">
+    <ul v-if="showUploadList" :class="`upload-list upload-list-${listType}`">
       <li v-for="(file, index) in filesList" :key="index" class="flex justify-between" :class="`upload-${file.status}`">
         <span v-if="file.url"><img :src="file.url" :alt="file.name"></span>
         <span class="filename">{{ file.name }}</span>

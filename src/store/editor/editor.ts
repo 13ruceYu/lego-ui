@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { v4 as uuidv4 } from 'uuid'
 import type { TextComponentProps } from '@/constants/defaultProps'
 
-interface ComponentData {
+export interface ComponentData {
   props: { [key: string]: any }
   id: string
   name: string

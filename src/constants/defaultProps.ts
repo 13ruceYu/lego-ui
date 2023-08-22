@@ -79,6 +79,15 @@ export const textDefaultProps: TextComponentProps = {
   ...commonDefaultProps,
 }
 
+export interface ImageComponentProps extends CommonComponentProps {
+  src: string
+}
+
+export const imageDefaultProps: ImageComponentProps = {
+  src: 'test.url',
+  ...commonDefaultProps,
+}
+
 export const textStylePropNames = without(Object.keys(textDefaultProps), 'actionType', 'url', 'text')
 
 export function transformToComponentProps(props: TextComponentProps) {
