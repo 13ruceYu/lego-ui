@@ -31,6 +31,11 @@ const basicPage: RouteRecordRaw[] = [
     name: 'login',
     component: () => import('@/views/login/Login.vue'),
   },
+  {
+    path: '/oauth',
+    name: 'oauth',
+    component: () => import('@/views/oauth/Oauth.vue'),
+  },
 ]
 
 const routes: RouteRecordRaw[] = [...basicPage]

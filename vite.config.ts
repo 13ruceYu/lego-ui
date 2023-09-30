@@ -20,12 +20,4 @@ export default defineConfig({
       inline: ['@vue'],
     },
   },
-  server: {
-    proxy: {
-      '/api': {
-        target: 'http://182.92.168.192:8081',
-        changeOrigin: true,
-      },
-    },
-  },
 })
