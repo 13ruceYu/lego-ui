@@ -13,7 +13,7 @@ function handleUploadSuccess(resp: any, file: File) {
 <template>
   <Uploader
     class="styled-uploader"
-    action="http://local.test:7001/api/upload/"
+    action="/api/utils/upload-img"
     :show-upload-list="false"
     :before-upload="commonUploadCheck"
     @success="

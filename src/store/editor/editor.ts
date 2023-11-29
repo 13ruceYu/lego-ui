@@ -1,8 +1,7 @@
 import { defineStore } from 'pinia'
 import { v4 as uuidv4 } from 'uuid'
-import type { TextComponentProps } from '@/constants/defaultProps'
 
-export interface ComponentData {
+export interface IComponentData {
   props: { [key: string]: any }
   id: string
   name: string
@@ -10,13 +9,13 @@ export interface ComponentData {
 
 export interface EditorProps {
   // 供中间编辑器渲染的数组
-  components: ComponentData[]
+  components: IComponentData[]
   // 当前编辑的元素
   currentElement: string
   // 其余信息之后补充
 }
 
-export const testComponents: ComponentData[] = [
+export const testComponents: IComponentData[] = [
   {
     id: uuidv4(),
     name: 'l-text',
@@ -47,13 +46,8 @@ export const useEditorStore = defineStore({
     },
   },
   actions: {
-    addComponent(props: Partial<TextComponentProps>) {
-      const newComponent: ComponentData = {
-        id: uuidv4(),
-        name: 'l-text',
-        props,
-      }
-      this.components.push(newComponent)
+    addComponent(componentData: IComponentData) {
+      this.components.push(componentData)
     },
     setActive(id: string) {
       this.currentElement = id

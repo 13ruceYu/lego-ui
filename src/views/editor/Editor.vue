@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { useEditorStore } from '@/store/editor/editor'
 import LText from '@/components/LText.vue'
+import LImage from '@/components/LImage.vue'
 import ComponentsList from '@/components/ComponentsList.vue'
 import EditWrapper from '@/components/EditWrapper.vue'
 import PropsTable from '@/components/PropsTable.vue'
@@ -12,7 +13,7 @@ interface compMap {
 }
 
 const editorStore = useEditorStore()
-const localComps: compMap = { 'l-text': LText }
+const localComps: compMap = { 'l-text': LText, 'l-image': LImage }
 const currentElement = computed(() => editorStore.getCurrentElement)
 
 function addItem(props: any) {

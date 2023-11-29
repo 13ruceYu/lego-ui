@@ -88,12 +88,14 @@ export const imageDefaultProps: ImageComponentProps = {
   ...commonDefaultProps,
 }
 
+export const imageStylePropsNames = without(Object.keys(imageDefaultProps), 'src')
+
 export const textStylePropNames = without(Object.keys(textDefaultProps), 'actionType', 'url', 'text')
 
-export function transformToComponentProps(props: TextComponentProps) {
+export function transformToComponentProps<T extends {}>(props: T) {
   return mapValues(props, (item) => {
     return {
-      type: item.constructor as StringConstructor,
+      type: (item as any).constructor as StringConstructor,
       default: item,
     }
   })
