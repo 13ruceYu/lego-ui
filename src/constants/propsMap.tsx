@@ -1,20 +1,21 @@
 import type { VNode } from 'vue'
-import type { TextComponentProps } from './defaultProps'
+import type { AllComponentsProps } from './defaultProps'
 
 export interface PropToForm {
   component: string
   extraProps?: { [key: string]: any }
-  text: string
+  text?: string
   subComponent?: string
   options?: { text: string | VNode; value: any }[]
   initialTransform?: (v: any) => any
   afterTransform?: (v: any) => any
   valueProp?: string
   eventName?: string
+  src?: string
 }
 
 export type PropsToForms = {
-  [P in keyof TextComponentProps]?: PropToForm
+  [P in keyof AllComponentsProps]?: PropToForm
 }
 
 const fontFamilyArr = [
@@ -82,5 +83,9 @@ export const mapPropsToForms: PropsToForms = {
   color: {
     component: 'color-picker',
     text: '字体颜色',
+  },
+  src: {
+    component: 'image-processor',
+    // text: '图片',
   },
 }

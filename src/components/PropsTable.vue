@@ -4,6 +4,7 @@ import { computed } from 'vue'
 import { reduce } from 'lodash'
 // import PropsTableItemComponent from './PropsTableItemComponent'
 import ColorPicker from './ColorPicker.vue'
+import ImageProcessor from './ImageProcessor.vue'
 import RenderVNode from './RenderVNode'
 import type { TextComponentProps } from '@/constants/defaultProps'
 import { mapPropsToForms } from '@/constants/propsMap'
@@ -18,14 +19,14 @@ const props = defineProps({
 const emits = defineEmits(['change'])
 
 defineOptions({
-  components: { ColorPicker },
+  components: { ColorPicker, ImageProcessor },
 })
 
 interface FormProps {
   component: string
   extraProps?: { [key: string]: any }
   value: string
-  text: string
+  text?: string
   subComponent?: string
   options?: { text: string | VNode; value: any }[]
   initialTransform?: (v: any) => any
@@ -63,7 +64,7 @@ const finalProps = computed(() => {
 <template>
   <div class="props-table">
     <div v-for="(item, key) in finalProps" :key="key" class="prop-item flex mb-2">
-      <div class="label flex-shrink-0 mr-2 leading-8">
+      <div v-if="item.text" class="label flex-shrink-0 mr-2 leading-8">
         {{ item.text }}
       </div>
       <component

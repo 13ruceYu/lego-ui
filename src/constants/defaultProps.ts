@@ -83,6 +83,8 @@ export interface ImageComponentProps extends CommonComponentProps {
   src: string
 }
 
+export type AllComponentsProps = TextComponentProps & ImageComponentProps
+
 export const imageDefaultProps: ImageComponentProps = {
   src: 'test.url',
   ...commonDefaultProps,

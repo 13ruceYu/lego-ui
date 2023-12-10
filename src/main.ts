@@ -5,7 +5,8 @@ import App from './App.vue'
 import router from './router'
 
 import './styles/index.css'
-import 'ant-design-vue/dist/antd.css'
+import 'ant-design-vue/dist/antd.css' // or 'ant-design-vue/dist/antd.less'
+import 'cropperjs/dist/cropper.css'
 
 const app = createApp(App)
 const pinia = createPinia()

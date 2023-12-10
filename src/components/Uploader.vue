@@ -105,7 +105,7 @@ function postFile(readyFile: IUploadFile) {
   axios.post(props.action, formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
-      'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJydWNleXVob25nYm9AZ21haWwuY29tIiwiX2lkIjoiNjUzYzY1MDhkY2EyNjgwODhkZTg2MzE5IiwiaWF0IjoxNzAxMjUyNzQ1LCJleHAiOjE3MDEyNTYzNDV9.KIvZcUbi0wS1vYUk1N_NtMCzv_ZjIN0QZC6GNp9ZegM',
+      'Authorization': `Bearer ${import.meta.env.VITE_TOKEN}`,
     },
   }).then((resp) => {
     readyFile.status = 'success'

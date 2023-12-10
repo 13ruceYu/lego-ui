@@ -32,6 +32,31 @@ export const testComponents: IComponentData[] = [
       url: 'https://google.com',
     },
   },
+  {
+    id: uuidv4(),
+    name: 'l-image',
+    props: {
+      src: 'http://lego-backend-vue.oss-cn-hangzhou.aliyuncs.com/imooc-test/ucVvnF.png',
+      actionType: '',
+      url: '',
+      height: '',
+      width: '200px',
+      paddingLeft: '0px',
+      paddingRight: '0px',
+      paddingTop: '0px',
+      paddingBottom: '0px',
+      borderStyle: 'none',
+      borderColor: '#000',
+      borderWidth: '0',
+      borderRadius: '0',
+      boxShadow: '0 0 0 #000000',
+      opacity: '1',
+      position: 'absolute',
+      left: '0',
+      top: '0',
+      right: '0',
+    },
+  },
 ]
 
 export const useEditorStore = defineStore({

@@ -65,7 +65,7 @@ function removeCurrentElement() {
       <pre>
         {{ currentElement?.props }}
       </pre>
-      <a-button v-show="currentElement" type="danger" size="small" @click="removeCurrentElement">
+      <a-button v-show="currentElement" danger size="small" @click="removeCurrentElement">
         删除
       </a-button>
     </div>
