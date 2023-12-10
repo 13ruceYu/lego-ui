@@ -2,9 +2,18 @@ import { defineStore } from 'pinia'
 import { v4 as uuidv4 } from 'uuid'
 
 export interface IComponentData {
+  // 元素属性
   props: { [key: string]: any }
+  // uuid
   id: string
-  name: string
+  // 业务组件库名称
+  name: 'l-text' | 'l-image' | 'l-shape'
+  // 图层名称
+  layerName?: string
+  // 图层是否隐藏
+  isHidden?: boolean
+  // 图层是否锁定
+  isLocked?: boolean
 }
 
 export interface EditorProps {
@@ -15,13 +24,26 @@ export interface EditorProps {
   // 其余信息之后补充
 }
 
+export interface IUploadPayload {
+  key: string
+  value: any
+  id?: string
+  isRoot?: boolean
+}
+
 export const testComponents: IComponentData[] = [
   {
     id: uuidv4(),
     name: 'l-text',
     props: { text: 'hello', fontSize: '36px', lineHeight: '1', textAlign: 'left', opacity: '0.5', color: '#000000' },
+    layerName: '图层-1',
   },
-  { id: uuidv4(), name: 'l-text', props: { text: 'world', color: 'pink', lineHeight: '2', fontFamily: '' } },
+  {
+    id: uuidv4(),
+    name: 'l-text',
+    props: { text: 'world', color: 'pink', lineHeight: '2', fontFamily: '' },
+    layerName: '图层-2',
+  },
   {
     id: uuidv4(),
     name: 'l-text',
@@ -31,6 +53,7 @@ export const testComponents: IComponentData[] = [
       actionType: 'url',
       url: 'https://google.com',
     },
+    layerName: '图层-3',
   },
   {
     id: uuidv4(),
@@ -56,6 +79,7 @@ export const testComponents: IComponentData[] = [
       top: '0',
       right: '0',
     },
+    layerName: '图层-4',
   },
 ]
 
@@ -77,10 +101,15 @@ export const useEditorStore = defineStore({
     setActive(id: string) {
       this.currentElement = id
     },
-    updateComponent(key: string, value: any) {
-      const updatedComponent = this.components.find(comp => comp.id === this.currentElement)
-      if (updatedComponent)
-        updatedComponent.props[key] = value
+    updateComponent(payload: IUploadPayload) {
+      const { id, key, value, isRoot } = payload
+      const updatedComponent = this.components.find(comp => comp.id === (id || this.currentElement))
+      if (updatedComponent) {
+        if (isRoot)
+          (updatedComponent as any)[key] = value
+        else
+          updatedComponent.props[key] = value
+      }
     },
     removeComponent(id: string) {
       this.components = this.components.filter(comp => comp.id !== id)

@@ -1,20 +1,23 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useEditorStore } from '@/store/editor/editor'
 import LText from '@/components/LText.vue'
 import LImage from '@/components/LImage.vue'
 import ComponentsList from '@/components/ComponentsList.vue'
 import EditWrapper from '@/components/EditWrapper.vue'
 import PropsTable from '@/components/PropsTable.vue'
+import LayerList from '@/components/LayerList.vue'
 import { defaultTextTemplates } from '@/constants/defaultTemplates'
 
 interface compMap {
   [key: string]: object
 }
 
-const editorStore = useEditorStore()
 const localComps: compMap = { 'l-text': LText, 'l-image': LImage }
+
+const editorStore = useEditorStore()
 const currentElement = computed(() => editorStore.getCurrentElement)
+const activeKey = ref('1')
 
 function addItem(props: any) {
   editorStore.addComponent(props)
@@ -25,8 +28,7 @@ function setActive(id: string) {
 }
 
 function handleChange(e: any) {
-  const { key, value } = e
-  editorStore.updateComponent(key, value)
+  editorStore.updateComponent(e)
 }
 
 function removeCurrentElement() {
@@ -56,18 +58,27 @@ function removeCurrentElement() {
       </div>
     </div>
     <div class="attr-panel w-60 border-2 border-green-400">
-      <h1>组件属性</h1>
-      <PropsTable
-        v-if="currentElement && currentElement.props"
-        :props="currentElement.props"
-        @change="handleChange"
-      />
-      <pre>
-        {{ currentElement?.props }}
-      </pre>
-      <a-button v-show="currentElement" danger size="small" @click="removeCurrentElement">
-        删除
-      </a-button>
+      <a-tabs v-model:activeKey="activeKey">
+        <a-tab-pane key="1" tab="属性设置">
+          <a-empty v-if="currentElement?.isLocked" />
+          <div v-else>
+            <PropsTable
+              v-if="currentElement && currentElement.props"
+              :props="currentElement.props"
+              @change="handleChange"
+            />
+            <pre>
+              {{ currentElement?.props }}
+            </pre>
+            <a-button v-show="currentElement" danger size="small" @click="removeCurrentElement">
+              删除
+            </a-button>
+          </div>
+        </a-tab-pane>
+        <a-tab-pane key="2" tab="图层设置" force-render>
+          <LayerList :list="editorStore.components" :selected-id="currentElement?.id" @change="handleChange" @select="setActive" />
+        </a-tab-pane>
+      </a-tabs>
     </div>
   </div>
 </template>
