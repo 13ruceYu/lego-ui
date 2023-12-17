@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import Icon, { EyeInvisibleOutlined, EyeOutlined, LockOutlined, UnlockOutlined } from '@ant-design/icons-vue'
+import InlineEdit from './InlineEdit.vue'
 import type { IComponentData } from '@/store/editor/editor'
 
 interface IProps {
@@ -27,9 +28,10 @@ function handleChange(id: string, key: string, value: boolean) {
       @click="emits('select', item.id)"
     >
       <div class="name">
-        {{ item.layerName }}
+        <!-- {{ item.layerName }} -->
+        <InlineEdit :value="item.layerName || ''" @change="value => handleChange(item.id, 'layName', false)" />
       </div>
-      <div class="opts">
+      <div class="opts shrink-0">
         <a-tooltip :title="item.isHidden ? '隐藏' : '显示'">
           <a-button shape="circle">
             <template #icon>

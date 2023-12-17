@@ -54,14 +54,12 @@ async function getCode() {
         <a-form-item>
           <a-button
             type="primary"
-            size="large"
             :loading="isLoginLoading"
             @click="login"
           >
             登录
           </a-button>
           <a-button
-            size="large"
             :style="{ marginLeft: '20px' }"
             :disabled="codeButtonDisable"
             @click="getCode"
