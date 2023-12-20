@@ -1,5 +1,7 @@
 import { defineStore } from 'pinia'
 import { v4 as uuidv4 } from 'uuid'
+import { textDefaultProps } from 'lego-bricks'
+import type { AllComponentProps } from 'lego-bricks'
 
 export interface IComponentData {
   // 元素属性
@@ -31,11 +33,20 @@ export interface IUploadPayload {
   isRoot?: boolean
 }
 
+export interface PageProps {
+  backgroundColor: string
+  backgroundImage: string
+  backgroundRepeat: string
+  backgroundSize: string
+  height: string
+}
+export type AllFormProps = PageProps & AllComponentProps
+
 export const testComponents: IComponentData[] = [
   {
     id: uuidv4(),
     name: 'l-text',
-    props: { text: 'hello', fontSize: '36px', lineHeight: '1', textAlign: 'left', opacity: '0.5', color: '#000000' },
+    props: { ...textDefaultProps, text: 'hello', fontSize: '36px', lineHeight: '1', textAlign: 'left', opacity: '0.5', color: '#000000' },
     layerName: '图层-1',
   },
   {

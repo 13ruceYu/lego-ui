@@ -2,9 +2,10 @@
 import type { PropType, VNode } from 'vue'
 import { computed } from 'vue'
 import { reduce } from 'lodash'
-// import PropsTableItemComponent from './PropsTableItemComponent'
 import ColorPicker from './ColorPicker.vue'
 import ImageProcessor from './ImageProcessor.vue'
+import ShadowPicker from './ShadowPicker.vue'
+import IconSwitch from './IconSwitch.vue'
 import RenderVNode from './RenderVNode'
 import type { TextComponentProps } from '@/constants/defaultProps'
 import { mapPropsToForms } from '@/constants/propsMap'
@@ -19,7 +20,7 @@ const props = defineProps({
 const emits = defineEmits(['change'])
 
 defineOptions({
-  components: { ColorPicker, ImageProcessor },
+  components: { ColorPicker, ImageProcessor, ShadowPicker, IconSwitch },
 })
 
 interface FormProps {
@@ -77,7 +78,6 @@ const finalProps = computed(() => {
           </component>
         </template>
       </component>
-      <!-- <PropsTableItemComponent v-if="item" class="grow" :final-props-item="item"></PropsTableItemComponent> -->
     </div>
   </div>
 </template>

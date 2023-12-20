@@ -5,7 +5,7 @@ import LText from '@/components/LText.vue'
 import LImage from '@/components/LImage.vue'
 import ComponentsList from '@/components/ComponentsList.vue'
 import EditWrapper from '@/components/EditWrapper.vue'
-import PropsTable from '@/components/PropsTable.vue'
+import EditGroup from '@/components/EditGroup.vue'
 import LayerList from '@/components/LayerList.vue'
 import { defaultTextTemplates } from '@/constants/defaultTemplates'
 
@@ -61,15 +61,12 @@ function removeCurrentElement() {
       <a-tabs v-model:activeKey="activeKey">
         <a-tab-pane key="1" tab="属性设置">
           <a-empty v-if="currentElement?.isLocked" />
-          <div v-else>
-            <PropsTable
+          <div v-else class="overflow-auto">
+            <EditGroup
               v-if="currentElement && currentElement.props"
               :props="currentElement.props"
               @change="handleChange"
             />
-            <pre>
-              {{ currentElement?.props }}
-            </pre>
             <a-button v-show="currentElement" danger size="small" @click="removeCurrentElement">
               删除
             </a-button>
