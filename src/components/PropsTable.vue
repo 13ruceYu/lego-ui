@@ -4,6 +4,7 @@ import { computed } from 'vue'
 import { reduce } from 'lodash'
 import ColorPicker from './ColorPicker.vue'
 import ImageProcessor from './ImageProcessor.vue'
+import BackgroundProcessor from './BackgroundProcessor.vue'
 import ShadowPicker from './ShadowPicker.vue'
 import IconSwitch from './IconSwitch.vue'
 import RenderVNode from './RenderVNode'
@@ -20,7 +21,7 @@ const props = defineProps({
 const emits = defineEmits(['change'])
 
 defineOptions({
-  components: { ColorPicker, ImageProcessor, ShadowPicker, IconSwitch },
+  components: { ColorPicker, ImageProcessor, ShadowPicker, IconSwitch, BackgroundProcessor },
 })
 
 interface FormProps {
