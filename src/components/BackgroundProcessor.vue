@@ -2,15 +2,15 @@
 import { message } from 'ant-design-vue'
 import ImageProcessor from './ImageProcessor.vue'
 import StyledUploader from './StyledUploader.vue'
-import type { IUploadResp } from '@/types/uploadResp'
+// import type { IUploadResp } from '@/types/uploadResp'
 
 defineProps({ value: { type: String, default: '' } })
 const emits = defineEmits(['change'])
 
-function onImageUploaded(data: { resp: IUploadResp; file: File }) {
+function onImageUploaded(data: { resp: any; file: File }) {
   const { resp } = data
   message.success('上传成功')
-  emits('change', resp.data.url)
+  emits('change', resp.data[0])
 }
 function handleUploadUrl(url: string) {
   emits('change', url)

@@ -9,7 +9,7 @@ interface ICropDataProps {
   y: number
 }
 
-const props = defineProps(['value'])
+const props = defineProps(['value', 'showDelete'])
 const emits = defineEmits(['change'])
 
 const open = ref<boolean>(false)
@@ -30,6 +30,9 @@ function handleOk() {
     emits('change', cropURL)
   }
   // open.value = false
+}
+function handleDelete() {
+  emits('change', '')
 }
 
 watch(open, async (newVal) => {
@@ -65,7 +68,10 @@ watch(open, async (newVal) => {
       <a-button type="primary" class="mb-2" @click="showModal">
         图片裁剪
       </a-button><br>
-      <a-button>图片替换</a-button>
+      <a-button>图片替换</a-button><br>
+      <a-button @click="handleDelete">
+        图片删除
+      </a-button>
     </div>
     <a-modal v-model:visible="open" title="Basic Modal" @ok="handleOk">
       <div>

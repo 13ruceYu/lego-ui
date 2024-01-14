@@ -144,5 +144,8 @@ export const useEditorStore = defineStore({
     removeComponent(id: string) {
       this.components = this.components.filter(comp => comp.id !== id)
     },
+    updatePage({ key, value }: IUploadPayload) {
+      this.page.props[key as keyof PageProps] = value
+    },
   },
 })

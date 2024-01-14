@@ -98,24 +98,25 @@ function triggerUpload() {
     fileInput.value.click()
 }
 
-function postFile(readyFile: IUploadFile) {
+async function postFile(readyFile: IUploadFile) {
   const formData = new FormData()
   formData.append(readyFile.name, readyFile.raw)
   readyFile.status = 'loading'
-  axios.post(props.action, formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-      'Authorization': `Bearer ${import.meta.env.VITE_TOKEN}`,
-    },
-  }).then((resp) => {
+  try {
+    const resp = await axios.post(props.action, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'Authorization': `Bearer ${import.meta.env.VITE_TOKEN}`,
+      },
+    })
     readyFile.status = 'success'
     readyFile.resp = resp.data
     emits('success', { resp: resp.data, file: readyFile, list: filesList.value })
-  }).catch(() => {
+  }
+  catch (error) {
     readyFile.status = 'error'
-  }).finally(() => {
-    fileInput.value && (fileInput.value.value = '')
-  })
+  }
+  fileInput.value && (fileInput.value.value = '')
 }
 
 // addFileToList

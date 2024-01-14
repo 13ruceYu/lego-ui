@@ -34,6 +34,10 @@ function handleChange(e: any) {
   editorStore.updateComponent(e)
 }
 
+function pageChange(e: any) {
+  editorStore.updatePage(e)
+}
+
 function removeCurrentElement() {
   currentElement.value && editorStore.removeComponent(currentElement.value.id)
 }
@@ -79,7 +83,7 @@ function removeCurrentElement() {
           <LayerList :list="editorStore.components" :selected-id="currentElement?.id" @change="handleChange" @select="setActive" />
         </a-tab-pane>
         <a-tab-pane key="3" tab="页面设置" force-render>
-          <PropsTable :props="page.props" />
+          <PropsTable :props="page.props" @change="pageChange" />
         </a-tab-pane>
       </a-tabs>
     </div>
