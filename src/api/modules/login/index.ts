@@ -3,7 +3,7 @@ import { axios } from '@/api/axios'
 
 export function getVerificationCode(data: VerificationCodeReq) {
   return axios<VerificationCodeRes>({
-    url: '/users/genVeriCode',
+    url: '/users/sendVeriCode',
     method: 'post',
     data,
   })
