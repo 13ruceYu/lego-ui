@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, reactive } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
 import { LockOutlined, UserOutlined } from '@ant-design/icons-vue'
 import { Form } from 'ant-design-vue'
 import { getVerificationCode } from '@/api/modules/login'
@@ -21,14 +21,27 @@ const rules = reactive({
   ],
 })
 const isLoginLoading = false
-const codeButtonDisable = computed(() => !cellphoneReg.test(form.cellphone.trim()))
-const counter = 60
+const counter = ref(60)
+const codeButtonDisable = computed(() => !cellphoneReg.test(form.cellphone.trim()) || counter.value < 60)
 const { validate, validateInfos } = useForm(form, rules)
+let _timer = null
+
+watch(counter, (newVal) => {
+  newVal === 0 && (_timer = null)
+})
+
+function startCounter() {
+  counter.value--
+  _timer = setInterval(() => {
+    counter.value--
+  }, 1000)
+}
 
 function login() {
   validate()
 }
 async function getCode() {
+  startCounter()
   const res = await getVerificationCode({ phoneNumber: '15757460227' })
   // eslint-disable-next-line no-console
   console.log(res)
