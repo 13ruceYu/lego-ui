@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
-import Antd from 'ant-design-vue'
+import Antd, { message } from 'ant-design-vue'
+import type { MessageApi } from 'ant-design-vue/lib/message'
 import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
@@ -15,3 +16,11 @@ app.use(pinia)
 app.use(Antd)
 app.use(router)
 app.mount('#app')
+
+declare global {
+  interface Window {
+    $message: MessageApi
+  }
+}
+
+window.$message = message

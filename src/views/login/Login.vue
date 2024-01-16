@@ -2,9 +2,14 @@
 import { computed, reactive, ref, watch } from 'vue'
 import { LockOutlined, UserOutlined } from '@ant-design/icons-vue'
 import { Form } from 'ant-design-vue'
+import { useRouter } from 'vue-router'
 import { getVerificationCode } from '@/api/modules/login'
+import { useUserStore } from '@/store/user/user'
 
+const userStore = useUserStore()
 const useForm = Form.useForm
+const router = useRouter()
+
 const cellphoneReg = /^1[3-9]\d{9}$/
 
 const form = reactive({
@@ -24,27 +29,35 @@ const isLoginLoading = false
 const counter = ref(60)
 const codeButtonDisable = computed(() => !cellphoneReg.test(form.cellphone.trim()) || counter.value < 60)
 const { validate, validateInfos } = useForm(form, rules)
-let _timer = null
+let timer: ReturnType<typeof setInterval>
 
-watch(counter, (newVal) => {
-  newVal === 0 && (_timer = null)
+watch(counter, (newValue) => {
+  if (newValue === 0) {
+    clearInterval(timer)
+    counter.value = 60
+  }
 })
 
 function startCounter() {
   counter.value--
-  _timer = setInterval(() => {
+  timer = setInterval(() => {
     counter.value--
   }, 1000)
 }
 
 function login() {
-  validate()
+  validate().then(async () => {
+    await userStore.login(form.cellphone, form.verifyCode)
+    await userStore.fetchCurrentUser()
+    window.$message.success('登录成功')
+    router.push('/')
+  })
 }
 async function getCode() {
   startCounter()
   const res = await getVerificationCode({ phoneNumber: '15757460227' })
-  // eslint-disable-next-line no-console
-  console.log(res)
+  window.$message.success('验证码已发送，请注意查收')
+  navigator.clipboard.writeText(res.veriCode)
 }
 </script>
 
