@@ -2,12 +2,14 @@ import type { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
 import axios from 'axios'
 import qs from 'qs'
 import _ from 'lodash'
+import { useGlobalStore } from '@/store/global/global'
 // import cookies from 'js-cookie'
 // import { useUISettingStore } from '@/store/ui-setting/ui-setting'
 // import { useUserStore } from '@/store/user/user'
 import router from '@/router'
 import utils from '@/utils'
 
+const globalStore = useGlobalStore()
 // const userStore = useUserStore()
 // const uiSettingStore = useUISettingStore()
 
@@ -56,6 +58,7 @@ function err(err: AxiosError): Promise<AxiosError> {
 
 service.interceptors.request.use((config) => {
   config.headers = config.headers || {}
+  globalStore.startLoading()
   // config.headers.sessionId = userStore.getSessionId
   // const language = cookies.get('language')
   // if (language) config.headers.language = language
@@ -65,13 +68,15 @@ service.interceptors.request.use((config) => {
 
 // The response to intercept
 service.interceptors.response.use((res: AxiosResponse) => {
+  globalStore.finishLoading()
   // No errno will be processed
-  if (res.data.errno === undefined)
-    return res.data
+  const { data } = res
+  if (data.errno === undefined)
+    return data
 
-  switch (res.data.errno) {
+  switch (data.errno) {
     case 0:
-      return res.data.data
+      return data.data
     default:
       handleError(res)
       throw new Error('hello')

@@ -5,7 +5,9 @@ import { Form } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
 import { getVerificationCode } from '@/api/modules/login'
 import { useUserStore } from '@/store/user/user'
+import { useGlobalStore } from '@/store/global/global'
 
+const globalStore = useGlobalStore()
 const userStore = useUserStore()
 const useForm = Form.useForm
 const router = useRouter()
@@ -25,7 +27,6 @@ const rules = reactive({
     { required: true, message: '验证码不能为空', trigger: 'blur' },
   ],
 })
-const isLoginLoading = false
 const counter = ref(60)
 const codeButtonDisable = computed(() => !cellphoneReg.test(form.cellphone.trim()) || counter.value < 60)
 const { validate, validateInfos } = useForm(form, rules)
@@ -50,7 +51,7 @@ function login() {
     await userStore.login(form.cellphone, form.verifyCode)
     await userStore.fetchCurrentUser()
     window.$message.success('登录成功')
-    router.push('/')
+    // router.push('/')
   })
 }
 async function getCode() {
@@ -90,7 +91,7 @@ async function getCode() {
         <a-form-item>
           <a-button
             type="primary"
-            :loading="isLoginLoading"
+            :loading="globalStore.isLoading"
             @click="login"
           >
             登录
