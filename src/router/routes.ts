@@ -3,28 +3,20 @@ import type { RouteRecordRaw } from 'vue-router'
 const basicPage: RouteRecordRaw[] = [
   {
     path: '/',
-    redirect: { name: 'home' },
-    meta: { title: '首页' },
+    name: 'index',
+    component: () => import('@/views/Index.vue'),
     children: [
-      {
-        path: '/home',
-        name: 'home',
-        component: () => import('@/views/home/Home.vue'),
-        meta: {
-          title: '首页',
-          activeMenu: 'home',
-          auth: [],
-        },
-      },
-      {
-        path: '/editor',
-        name: 'editor',
-        component: () => import('@/views/editor/Editor.vue'),
-        meta: {
-          title: '编辑页面',
-        },
-      },
+      { path: '', name: 'home', component: () => import('@/views/home/Home.vue'), meta: { title: '欢迎来到慕课乐高' } },
+      { path: 'template/:id', name: 'template', component: () => import('@/views/template/TemplateDetail.vue'), meta: { title: '模版详情' } },
     ],
+  },
+  {
+    path: '/editor',
+    name: 'editor',
+    component: () => import('@/views/editor/Editor.vue'),
+    meta: {
+      title: '编辑页面',
+    },
   },
   {
     path: '/login',

@@ -1,17 +1,47 @@
-<script lang="ts" setup>
-import Hello from '@/components/Hello'
-import Uploader from '@/components/Uploader.vue'
+<script lang="ts">
+import { computed, defineComponent, onMounted } from 'vue'
+import TemplateList from '@/components/TemplateList.vue'
+import { useTemplateStore } from '@/store/template/template'
+
+export default defineComponent({
+  components: {
+    TemplateList,
+  },
+  setup() {
+    const templateStore = useTemplateStore()
+    const testData = computed(() => templateStore.data)
+    // const isLoading = computed(() => store.getters.isOpLoading('fetchTemplates'))
+    const isLoading = false
+    onMounted(() => {
+      templateStore.getTemplates()
+    })
+    return {
+      testData,
+      isLoading,
+    }
+  },
+})
 </script>
 
 <template>
-  <nav class="flex justify-between bg-slate-400 h-10 items-center px-3">
-    <div class="logo">
-      lego-logo
-    </div>
-    <div class="user-info">
-      user-1
-    </div>
-  </nav>
-  <Hello name="hello" />
-  <Uploader action="" drag list-type="picture" />
+  <div class="content-container">
+    <h1 v-if="isLoading">
+      templates is Loading!
+    </h1>
+    <TemplateList :list="testData" />
+  </div>
 </template>
+
+<style>
+.page-title {
+  color: #fff;
+}
+.content-container {
+  background: #fff;
+  padding: 0 24px 24px 30px;
+  min-height: 85vh;
+  max-width: 1200px;
+  margin: 50px auto;
+  width: 100%;
+}
+</style>
