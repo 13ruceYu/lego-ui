@@ -51,12 +51,12 @@ function login() {
     await userStore.login(form.cellphone, form.verifyCode)
     await userStore.fetchCurrentUser()
     window.$message.success('登录成功')
-    // router.push('/')
+    router.push('/')
   })
 }
 async function getCode() {
   startCounter()
-  const res = await getVerificationCode({ phoneNumber: '15757460227' })
+  const res = await getVerificationCode({ phoneNumber: form.cellphone })
   window.$message.success('验证码已发送，请注意查收')
   navigator.clipboard.writeText(res.veriCode)
 }

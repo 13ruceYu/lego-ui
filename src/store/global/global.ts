@@ -22,10 +22,8 @@ export const useGlobalStore = defineStore({
         this.opNames[opName] = true
     },
     finishLoading(opName?: string) {
-      setTimeout(() => {
-        this.requestNumber--
-        opName && delete this.opNames[opName]
-      }, 1000)
+      this.requestNumber--
+      opName && delete this.opNames[opName]
     },
   },
 })

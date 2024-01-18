@@ -18,25 +18,15 @@ export const useUserStore = defineStore({
   }),
   actions: {
     async login(phoneNumber: string, veriCode: string) {
-      try {
-        const rawData = await loginByPhone({ phoneNumber, veriCode })
-        const { token } = rawData
-        this.token = token
-        axios.defaults.headers.common.Authorization = `Bearer ${token}`
-      }
-      catch (error) {
-        console.log(error)
-      }
+      const rawData = await loginByPhone({ phoneNumber, veriCode })
+      const { token } = rawData
+      this.token = token
+      axios.defaults.headers.common.Authorization = `Bearer ${token}`
     },
     async fetchCurrentUser() {
-      try {
-        const res = await getUserInfo()
-        this.isLogin = true
-        this.data = res
-      }
-      catch (error) {
-        console.log(error)
-      }
+      const res = await getUserInfo()
+      this.isLogin = true
+      this.data = res
     },
   },
 })
