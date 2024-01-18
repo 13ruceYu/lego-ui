@@ -22,6 +22,7 @@ export const useUserStore = defineStore({
       const { token } = rawData
       this.token = token
       axios.defaults.headers.common.Authorization = `Bearer ${token}`
+      localStorage.setItem('token', token)
     },
     async fetchCurrentUser() {
       const res = await getUserInfo()

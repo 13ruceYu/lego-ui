@@ -6,7 +6,7 @@ import { useGlobalStore } from '@/store/global/global'
 import utils from '@/utils'
 import type { RespType } from '@/types/respType'
 
-const globalStore = useGlobalStore()
+let globalStore: any
 
 /**
  * @description Log and display errors
@@ -41,6 +41,7 @@ const baseRequestConfig: AxiosRequestConfig = {
 const service = axios.create(baseRequestConfig)
 
 service.interceptors.request.use((config) => {
+  globalStore = useGlobalStore()
   config.headers = config.headers || {}
   globalStore.startLoading()
 
