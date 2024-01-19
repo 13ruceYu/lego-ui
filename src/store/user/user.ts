@@ -14,7 +14,7 @@ export const useUserStore = defineStore({
   state: (): UserProps => ({
     isLogin: false,
     data: {},
-    token: '',
+    token: localStorage.getItem('token') || '',
   }),
   actions: {
     async login(phoneNumber: string, veriCode: string) {
@@ -28,6 +28,12 @@ export const useUserStore = defineStore({
       const res = await getUserInfo()
       this.isLogin = true
       this.data = res
+    },
+    logout() {
+      this.token = ''
+      this.isLogin = false
+      localStorage.removeItem('token')
+      delete axios.defaults.headers.common.Authorization
     },
   },
 })

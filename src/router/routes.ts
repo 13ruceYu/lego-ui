@@ -16,12 +16,17 @@ const basicPage: RouteRecordRaw[] = [
     component: () => import('@/views/editor/Editor.vue'),
     meta: {
       title: '编辑页面',
+      requiredLogin: true,
     },
   },
   {
     path: '/login',
     name: 'login',
     component: () => import('@/views/login/Login.vue'),
+    meta: {
+      title: '欢迎登录',
+      redirectAlreadyLogin: true,
+    },
   },
   {
     path: '/oauth',
