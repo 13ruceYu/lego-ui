@@ -41,6 +41,13 @@ function pageChange(e: any) {
 function removeCurrentElement() {
   currentElement.value && editorStore.removeComponent(currentElement.value.id)
 }
+
+function updatePosition(data: { left: number; top: number; id: string }) {
+  const { left, top, id } = data
+  console.log(left, top)
+  editorStore.updateComponent({ key: 'left', value: `${left}px`, id })
+  editorStore.updateComponent({ key: 'top', value: `${top}px`, id })
+}
 </script>
 
 <template>
@@ -51,14 +58,17 @@ function removeCurrentElement() {
     </div>
     <div class="flex-1 border-2 border-red-400 canvas">
       <h1>画布</h1>
-      <div class="relative m-auto border border-red-600 frame w-80 h-96 bg-slate-200" :style="page.props">
+      <div id="canvas-area" class="relative m-auto frame w-80 h-96 bg-slate-200" :style="page.props">
         <EditWrapper
-          v-for="(comp, index) in editorStore.$state.components"
+          v-for="(comp, index) in editorStore.components"
+          :id="comp.id"
           :key="index"
           :active="comp.id === currentElement?.id"
+          :props="comp.props"
           @set-active="setActive(comp.id)"
+          @update-position="updatePosition"
         >
-          <component :is="localComps[comp.name]" v-bind="comp.props">
+          <component :is="localComps[comp.name]" v-bind="comp.props" style="position: static !important;">
             {{ comp.props.text }}
           </component>
         </EditWrapper>
