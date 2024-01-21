@@ -1,8 +1,9 @@
 import { createPinia, setActivePinia } from 'pinia'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { last } from 'lodash'
-import type { TextComponentProps } from '@/constants/defaultProps'
+import type { IComponentData } from '@/store/editor/editor'
 import { testComponents, useEditorStore } from '@/store/editor/editor'
+import { textDefaultProps } from '@/constants/defaultProps'
 
 const testComponentsClone = [...testComponents]
 
@@ -29,8 +30,14 @@ describe('test editor store', () => {
 
   it('add component should work fine', () => {
     const editorStore = useEditorStore()
-    const payload: Partial<TextComponentProps> = {
-      text: 'test-1',
+    const payload: IComponentData = {
+      name: 'l-text',
+      id: '1234',
+      props: {
+        ...textDefaultProps,
+        text: 'test-1',
+
+      },
     }
     editorStore.addComponent(payload)
     expect(editorStore.components).toHaveLength(testComponentsClone.length + 1)
@@ -45,7 +52,7 @@ describe('test editor store', () => {
       value: 'update',
     }
     editorStore.setActive(testComponents[0].id)
-    editorStore.updateComponent(newProps.key, newProps.value)
+    editorStore.updateComponent({ key: newProps.key, value: newProps.value })
     const curEl = editorStore.getCurrentElement
     expect(curEl?.props.text).toBe(newProps.value)
   })

@@ -11,6 +11,7 @@ export default defineComponent({
     const router = useRouter()
     const logout = () => {
       message.success('退出登录成功，2秒后跳转到首页', 2)
+      userStore.logout()
       setTimeout(() => {
         router.push('/')
       }, 2000)
@@ -18,6 +19,7 @@ export default defineComponent({
     return {
       logout,
       userStore,
+      router,
     }
   },
 })
@@ -27,6 +29,7 @@ export default defineComponent({
   <a-button
     v-if="!userStore.isLogin" type="primary"
     class="btn-login"
+    @click="router.push('/login')"
   >
     登录
   </a-button>

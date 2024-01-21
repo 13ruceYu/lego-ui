@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia'
 import { v4 as uuidv4 } from 'uuid'
-import { textDefaultProps } from 'lego-bricks'
 import type { AllComponentProps } from 'lego-bricks'
 import { cloneDeep } from 'lodash'
+import { textDefaultProps } from '@/constants/defaultProps'
 
 export interface PageProps {
   backgroundColor: string

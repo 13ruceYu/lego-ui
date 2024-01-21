@@ -1,10 +1,9 @@
-import { beforeAll, describe, expect, it, vi } from 'vitest'
-import type { VueWrapper } from '@vue/test-utils'
+import { describe, expect, it, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
-import { message } from 'ant-design-vue'
 // pinia
-import { createTestingPinia } from '@pinia/testing'
+import { createPinia, setActivePinia } from 'pinia'
 import { useRouter } from 'vue-router'
+import { nextTick } from 'vue'
 import { useUserStore } from '@/store/user/user'
 
 import UserProfile from '@/components/UserProfile.vue'
@@ -38,47 +37,31 @@ describe('UserProfile.vue', () => {
   })
   vi.useFakeTimers()
 
-  let wrapper: VueWrapper
-  beforeAll(() => {
-    wrapper = mount(UserProfile, {
-      global: {
-        components: globalComponents,
-        plugins: [
-          createTestingPinia({ createSpy: vi.fn() }),
-        ],
-      },
-      props: {
-        user: {
-          isLogin: false,
-          userName: '',
-        },
-      },
-    })
+  setActivePinia(createPinia())
+  const userStore = useUserStore()
+  const wrapper = mount(UserProfile, {
+    global: {
+      components: globalComponents,
+    },
   })
 
   it('should render login button when login is false', async () => {
     const btnLogin = wrapper.get('.btn-login')
     expect(btnLogin.text()).toBe('登录')
-    const spyMessage = vi.spyOn(message, 'success')
-    const userStore = useUserStore()
-    vi.spyOn(userStore, 'login')
-    await btnLogin.trigger('click')
-    expect(spyMessage).toHaveBeenCalled()
-    expect(userStore.login).toHaveBeenCalled()
   })
 
   it('should render username when login is true', async () => {
-    const userName = 'bobo'
-    await wrapper.setProps({
-      user: { isLogin: true, userName },
-    })
-    expect(wrapper.get('.user-profile-component').html()).toContain(userName)
+    const username = 'bobo'
+    // userStore.$patch({ isLogin: true, data: { username } })
+    userStore.$patch({ isLogin: true, data: { username } })
+    await nextTick()
+    expect(wrapper.get('.user-profile-component').html()).toContain(username)
     expect(wrapper.find('.user-profile-component').exists()).toBeTruthy()
   })
 
   it('should call logout and show message, call router.push after timeout', async () => {
-    const userStore = useUserStore()
     vi.spyOn(userStore, 'logout')
+    expect(wrapper.find('.user-profile-dropdown div').exists()).toBeTruthy()
     await wrapper.get('.user-profile-dropdown div').trigger('click')
     expect(userStore.logout).toHaveBeenCalled()
     vi.runAllTimers()
