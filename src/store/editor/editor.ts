@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { v4 as uuidv4 } from 'uuid'
 import { textDefaultProps } from 'lego-bricks'
 import type { AllComponentProps } from 'lego-bricks'
+import { cloneDeep } from 'lodash'
 
 export interface PageProps {
   backgroundColor: string
@@ -39,6 +40,8 @@ export interface EditorProps {
   currentElement: string
   // 其余信息之后补充
   page: PageData
+  // 当前被复制的组件
+  copiedComponent?: IComponentData
 }
 
 export interface IUploadPayload {
@@ -139,6 +142,22 @@ export const useEditorStore = defineStore({
     },
   },
   actions: {
+    copyComponent(id: string) {
+      const curEl = this.components.find(component => component.id === id)
+      if (curEl) {
+        this.copiedComponent = curEl
+        window.$message.success('拷贝成功')
+      }
+    },
+    pasteCopiedComponent() {
+      if (this.copiedComponent) {
+        const clone = cloneDeep(this.copiedComponent)
+        clone.id = uuidv4()
+        clone.layerName = `${this.copiedComponent.layerName} 副本`
+        this.components.push(clone)
+        window.$message.success('黏贴成功')
+      }
+    },
     addComponent(componentData: IComponentData) {
       this.components.push(componentData)
     },

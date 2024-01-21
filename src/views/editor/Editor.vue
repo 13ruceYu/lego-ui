@@ -10,15 +10,14 @@ import EditGroup from '@/components/EditGroup.vue'
 import LayerList from '@/components/LayerList.vue'
 import PropsTable from '@/components/PropsTable.vue'
 import { defaultTextTemplates } from '@/constants/defaultTemplates'
+import { initHotKeys } from '@/plugins/hotKeys'
 
 interface compMap {
   [key: string]: object
 }
-
+initHotKeys()
 const localComps: compMap = { 'l-text': LText, 'l-image': LImage }
-
 const editorStore = useEditorStore()
-
 const currentElement = computed(() => editorStore.getCurrentElement)
 const page = computed(() => editorStore.page)
 const activeKey = ref('1')
