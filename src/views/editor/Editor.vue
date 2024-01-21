@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { forIn, pickBy } from 'lodash'
 import { computed, ref } from 'vue'
 import { useEditorStore } from '@/store/editor/editor'
 import LText from '@/components/LText.vue'
@@ -43,10 +44,11 @@ function removeCurrentElement() {
 }
 
 function updatePosition(data: { left: number; top: number; id: string }) {
-  const { left, top, id } = data
-  console.log(left, top)
-  editorStore.updateComponent({ key: 'left', value: `${left}px`, id })
-  editorStore.updateComponent({ key: 'top', value: `${top}px`, id })
+  const { id } = data
+  const updatedData = pickBy<number>(data, (v, k) => k !== 'id')
+  forIn(updatedData, (v, k) => {
+    editorStore.updateComponent({ id, key: k, value: `${v}px` })
+  })
 }
 </script>
 
@@ -68,7 +70,7 @@ function updatePosition(data: { left: number; top: number; id: string }) {
           @set-active="setActive(comp.id)"
           @update-position="updatePosition"
         >
-          <component :is="localComps[comp.name]" v-bind="comp.props" style="position: static !important;">
+          <component :is="localComps[comp.name]" v-bind="comp.props" style="position: static !important; width: 100% !important; height: 100% !important;">
             {{ comp.props.text }}
           </component>
         </EditWrapper>
