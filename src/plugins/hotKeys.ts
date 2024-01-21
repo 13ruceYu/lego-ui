@@ -1,6 +1,15 @@
 import { computed } from 'vue'
+import type { HotkeysEvent, KeyHandler } from 'hotkeys-js'
 import { useHotKeys } from '@/hooks/useHotKeys'
 import { useEditorStore } from '@/store/editor/editor'
+
+// hof(higher-order-function) to browser default event when use hotkey
+function _wrapper(cb: KeyHandler) {
+  return (e: KeyboardEvent, event: HotkeysEvent) => {
+    e.preventDefault()
+    cb(e, event)
+  }
+}
 
 export function initHotKeys() {
   const editorStore = useEditorStore()
