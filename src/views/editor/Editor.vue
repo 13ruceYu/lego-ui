@@ -39,7 +39,7 @@ function pageChange(e: any) {
 }
 
 function removeCurrentElement() {
-  currentElement.value && editorStore.removeComponent(currentElement.value.id)
+  currentElement.value && editorStore.deleteComponent(currentElement.value.id)
 }
 
 function updatePosition(data: { left: number; top: number; id: string }) {

@@ -51,6 +51,9 @@ export interface IUploadPayload {
   isRoot?: boolean
 }
 
+type MoveDirection =
+  'Up' | 'Down' | 'Right' | 'Left'
+
 export const testComponents: IComponentData[] = [
   {
     id: uuidv4(),
@@ -140,10 +143,13 @@ export const useEditorStore = defineStore({
     getCurrentElement(state) {
       return state.components.find(comp => comp.id === state.currentElement)
     },
+    getElement(state) {
+      return (id: string) => state.components.find(comp => comp.id === id)
+    },
   },
   actions: {
     copyComponent(id: string) {
-      const curEl = this.components.find(component => component.id === id)
+      const curEl = this.getElement(id)
       if (curEl) {
         this.copiedComponent = curEl
         window.$message.success('拷贝成功')
@@ -174,8 +180,24 @@ export const useEditorStore = defineStore({
           updatedComponent.props[key] = value
       }
     },
-    removeComponent(id: string) {
+    deleteComponent(id: string) {
       this.components = this.components.filter(comp => comp.id !== id)
+    },
+    moveComponent(data: { direction: MoveDirection; amount: number; id: string }) {
+      const { direction, amount, id } = data
+      const curEl = this.getElement(id)
+      if (curEl) {
+        const oldTop = parseInt(curEl.props.top || 0)
+        switch (direction) {
+          case 'Up': {
+            const newVal = `${oldTop - amount}px`
+            this.updateComponent({ key: 'top', value: newVal, id })
+            break
+          }
+          default:
+            break
+        }
+      }
     },
     updatePage({ key, value }: IUploadPayload) {
       this.page.props[key as keyof PageProps] = value

@@ -12,9 +12,12 @@ export function initHotKeys() {
     editorStore.pasteCopiedComponent()
   })
   useHotKeys('delete, backspace', () => {
-    editorStore.removeComponent(curId.value)
+    editorStore.deleteComponent(curId.value)
   })
   useHotKeys('esc', () => {
     editorStore.setActive('')
+  })
+  useHotKeys('up', () => {
+    editorStore.moveComponent({ direction: 'Up', amount: 1, id: curId.value })
   })
 }
