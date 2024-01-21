@@ -1,4 +1,6 @@
-export const defaultTextTemplates = [
+import { textDefaultProps } from 'lego-bricks'
+
+const templatesList = [
   {
     text: '大标题',
     fontSize: '30px',
@@ -8,14 +10,14 @@ export const defaultTextTemplates = [
   },
   {
     text: '正文内容',
-    tag: 'div',
+    tag: 'p',
     width: '100px',
   },
   {
     text: '链接内容',
     color: '#1890ff',
     textDecoration: 'underline',
-    tag: 'div',
+    tag: 'p',
     width: '100px',
   },
   {
@@ -36,3 +38,9 @@ export const defaultTextTemplates = [
     position: 'absolute',
   },
 ]
+
+const defaultTextTemplates = templatesList.map(template => ({ ...textDefaultProps, ...template }))
+
+export {
+  defaultTextTemplates,
+}

@@ -165,7 +165,7 @@ export const useEditorStore = defineStore({
       }
     },
     addComponent(componentData: IComponentData) {
-      this.components.push(componentData)
+      this.components.push({ ...componentData, layerName: `图层-${this.components.length + 1}` })
     },
     setActive(id: string) {
       this.currentElement = id
