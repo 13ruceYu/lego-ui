@@ -188,10 +188,16 @@ export const useEditorStore = defineStore({
       const curEl = this.getElement(id)
       if (curEl) {
         const oldTop = parseInt(curEl.props.top || 0)
+        const oldLeft = parseInt(curEl.props.left || 0)
         switch (direction) {
           case 'Up': {
             const newVal = `${oldTop - amount}px`
             this.updateComponent({ key: 'top', value: newVal, id })
+            break
+          }
+          case 'Left': {
+            const newVal = `${oldLeft - amount}px`
+            this.updateComponent({ key: 'left', value: newVal, id })
             break
           }
           default:
