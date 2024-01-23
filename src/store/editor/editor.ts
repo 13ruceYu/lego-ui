@@ -1,8 +1,16 @@
 import { defineStore } from 'pinia'
 import { v4 as uuidv4 } from 'uuid'
 import type { AllComponentProps } from 'lego-bricks'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, findIndex } from 'lodash'
 import { textDefaultProps } from '@/constants/defaultProps'
+
+export interface HistoryProps {
+  id: string
+  componentId: string
+  type: 'add' | 'delete' | 'modify'
+  data: any
+  index?: number // 图层顺序
+}
 
 export interface PageProps {
   backgroundColor: string
@@ -42,6 +50,8 @@ export interface EditorProps {
   page: PageData
   // 当前被复制的组件
   copiedComponent?: IComponentData
+  histories: HistoryProps[]
+  historyIndex: number
 }
 
 export interface IUploadPayload {
@@ -138,6 +148,8 @@ export const useEditorStore = defineStore({
       title: 'test title',
       props: pageDefaultProps,
     },
+    histories: [],
+    historyIndex: -1,
   }),
   getters: {
     getCurrentElement(state) {
@@ -161,11 +173,24 @@ export const useEditorStore = defineStore({
         clone.id = uuidv4()
         clone.layerName = `${this.copiedComponent.layerName} 副本`
         this.components.push(clone)
+        this.histories.push({
+          id: uuidv4(),
+          componentId: clone.id,
+          type: 'add',
+          data: cloneDeep(clone),
+        })
         window.$message.success('黏贴成功')
       }
     },
     addComponent(componentData: IComponentData) {
-      this.components.push({ ...componentData, layerName: `图层-${this.components.length + 1}` })
+      const comp = { ...componentData, layerName: `图层-${this.components.length + 1}` }
+      this.components.push(comp)
+      this.histories.push({
+        id: uuidv4(),
+        componentId: componentData.id,
+        type: 'add',
+        data: cloneDeep(comp),
+      })
     },
     setActive(id: string) {
       this.currentElement = id
@@ -174,14 +199,34 @@ export const useEditorStore = defineStore({
       const { id, key, value, isRoot } = payload
       const updatedComponent = this.components.find(comp => comp.id === (id || this.currentElement))
       if (updatedComponent) {
-        if (isRoot)
+        if (isRoot) {
           (updatedComponent as any)[key] = value
-        else
+        }
+        else {
+          const oldValue = updatedComponent.props[key]
+          this.histories.push({
+            id: uuidv4(),
+            componentId: id || this.currentElement,
+            type: 'modify',
+            data: { oldValue, newValue: value, key },
+          })
           updatedComponent.props[key] = value
+        }
       }
     },
     deleteComponent(id: string) {
-      this.components = this.components.filter(comp => comp.id !== id)
+      const curComp = this.getElement(id)
+      if (curComp) {
+        this.components = this.components.filter(comp => comp.id !== id)
+        this.histories.push({
+          id: uuidv4(),
+          componentId: id,
+          type: 'delete',
+          data: curComp,
+          index: findIndex(this.components, comp => comp.id === id),
+        })
+        window.$message.success('删除成功')
+      }
     },
     moveComponent(data: { direction: MoveDirection; amount: number; id: string }) {
       const { direction, amount, id } = data
