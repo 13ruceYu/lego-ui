@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid'
 import type { AllComponentProps } from 'lego-bricks'
 import { cloneDeep, findIndex } from 'lodash'
 import { textDefaultProps } from '@/constants/defaultProps'
+import { insertAt } from '@/utils/helper'
 
 export interface HistoryProps {
   id: string
@@ -252,6 +253,36 @@ export const useEditorStore = defineStore({
     },
     updatePage({ key, value }: IUploadPayload) {
       this.page.props[key as keyof PageProps] = value
+    },
+    undo() {
+      // never undo before
+      if (this.historyIndex === -1) {
+        this.historyIndex = this.histories.length - 1
+      }
+      else {
+        // undo to prev
+        this.historyIndex--
+      }
+      // get history record
+      const history = this.histories[this.historyIndex]
+      switch (history.type) {
+        case 'add':
+          this.components = this.components.filter(comp => comp.id !== history.componentId)
+          break
+        case 'delete':
+          this.components = insertAt(this.components, history.index as number, history)
+          break
+        case 'modify': {
+          const { componentId, data } = history
+          const { key, oldValue } = data
+          const updateComponent = this.components.find(comp => comp.id === componentId)
+          if (updateComponent)
+            updateComponent.props[key] = oldValue
+          break
+        }
+        default:
+          break
+      }
     },
   },
 })
