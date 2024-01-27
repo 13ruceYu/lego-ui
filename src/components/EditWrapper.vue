@@ -147,6 +147,7 @@ function startResize(direction: ResizeDirection) {
   <div
     ref="wrapperEl"
     class="edit-wrapper"
+    :data-component-id="id"
     :class="[active && 'active outline outline-dash outline-1 outline-cyan-300']"
     :style="styleFromChild" @click="onItemClick(props.id)"
     @mousedown="startMove"
