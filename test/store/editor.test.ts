@@ -11,6 +11,7 @@ const testComponentsClone = [...testComponents]
 describe('test editor store', () => {
   setActivePinia(createPinia())
   const editorStore = useEditorStore()
+  window.$message = message
 
   it('should have default components', () => {
     expect(editorStore.components).toHaveLength(testComponents.length)
@@ -53,7 +54,6 @@ describe('test editor store', () => {
   })
 
   it('cv component should work fine', () => {
-    window.$message = message
     const curId = editorStore.components[0].id
     editorStore.copyComponent(curId)
     expect(editorStore.copiedComponent).toBeDefined()
@@ -69,5 +69,37 @@ describe('test editor store', () => {
       editorStore.moveComponent({ direction: 'Left', amount, id: curEl.id })
       expect(curEl.props.left).toBe(`${posLeft - amount}px`)
     }
+  })
+
+  it('undo should works fine', () => {
+    const getCurrentAndAssert = (text: string) => {
+      const currentElement = editorStore.getCurrentElement
+      expect(currentElement!.props.text).toBe(text)
+    }
+    editorStore.resetEditor()
+    const payload: IComponentData = {
+      name: 'l-text',
+      id: '1234',
+      props: {
+        ...textDefaultProps,
+        text: 'text1',
+      },
+    }
+    editorStore.addComponent(payload)
+    const payload2: IComponentData = {
+      name: 'l-text',
+      id: '2345',
+      props: {
+        ...textDefaultProps,
+        text: 'text2',
+      },
+    }
+    editorStore.addComponent(payload2)
+    editorStore.deleteComponent('2345')
+    editorStore.updateComponent({ key: 'text', value: 'update', id: '1234' })
+    editorStore.setActive('1234')
+    getCurrentAndAssert('update')
+    // undo step 1
+    editorStore.undo()
   })
 })

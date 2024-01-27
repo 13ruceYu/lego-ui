@@ -159,8 +159,33 @@ export const useEditorStore = defineStore({
     getElement(state) {
       return (id: string) => state.components.find(comp => comp.id === id)
     },
+    checkUndoDisable(state) {
+      // 1 no history item
+      // 2 move to the first item
+      if (state.histories.length === 0 || state.historyIndex === 0)
+        return true
+
+      return false
+    },
+    checkRedoDisable: (state) => {
+      // 1 no history item
+      // 2 move to the last item
+      // 3 never undo before
+      if (state.histories.length === 0
+        || state.historyIndex === state.histories.length
+        || state.historyIndex === -1)
+        return true
+
+      return false
+    },
   },
   actions: {
+    resetEditor() {
+      this.components = []
+      this.currentElement = ''
+      this.histories = []
+      this.historyIndex = -1
+    },
     copyComponent(id: string) {
       const curEl = this.getElement(id)
       if (curEl) {
