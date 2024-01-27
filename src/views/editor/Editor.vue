@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { forIn, pickBy } from 'lodash'
+import { pickBy } from 'lodash'
 import { computed, ref } from 'vue'
+import HistoryArea from './HistoryArea.vue'
 import { useEditorStore } from '@/store/editor/editor'
 import LText from '@/components/LText.vue'
 import LImage from '@/components/LImage.vue'
@@ -45,9 +46,9 @@ function removeCurrentElement() {
 function updatePosition(data: { left: number; top: number; id: string }) {
   const { id } = data
   const updatedData = pickBy<number>(data, (v, k) => k !== 'id')
-  forIn(updatedData, (v, k) => {
-    editorStore.updateComponent({ id, key: k, value: `${v}px` })
-  })
+  const keysArr = Object.keys(updatedData)
+  const valuesArr = Object.values(updatedData).map(v => `${v}px`)
+  editorStore.updateComponent({ id, key: keysArr, value: valuesArr })
 }
 </script>
 
@@ -57,8 +58,10 @@ function updatePosition(data: { left: number; top: number; id: string }) {
       <h1>组件列表</h1>
       <ComponentsList :list="defaultTextTemplates" @on-item-click="addItem" />
     </div>
-    <div class="flex-1 border-2 border-red-400 canvas">
+    <!-- TODO: when canvas position relative, item move position error -->
+    <div class="flex-1 border-2 border-red-400 canvas relative">
       <h1>画布</h1>
+      <HistoryArea />
       <div id="canvas-area" class="relative m-auto frame w-80 h-96 bg-slate-200" :style="page.props">
         <EditWrapper
           v-for="(comp, index) in editorStore.components"

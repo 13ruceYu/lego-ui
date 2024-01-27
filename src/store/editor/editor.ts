@@ -53,12 +53,20 @@ export interface EditorProps {
   copiedComponent?: IComponentData
   histories: HistoryProps[]
   historyIndex: number
+  cachedOldValues?: any
 }
 
 export interface IUploadPayload {
   key: string
   value: any
   id?: string
+  isRoot?: boolean
+}
+
+export interface UpdateComponentData {
+  key: string | string[]
+  value: string | string[]
+  id: string
   isRoot?: boolean
 }
 
@@ -151,6 +159,7 @@ export const useEditorStore = defineStore({
     },
     histories: [],
     historyIndex: -1,
+    cachedOldValues: null,
   }),
   getters: {
     getCurrentElement(state) {
@@ -221,22 +230,32 @@ export const useEditorStore = defineStore({
     setActive(id: string) {
       this.currentElement = id
     },
-    updateComponent(payload: IUploadPayload) {
+    updateComponent(payload: UpdateComponentData) {
       const { id, key, value, isRoot } = payload
       const updatedComponent = this.components.find(comp => comp.id === (id || this.currentElement))
       if (updatedComponent) {
         if (isRoot) {
-          (updatedComponent as any)[key] = value
+          (updatedComponent as any)[key as string] = value
         }
         else {
-          const oldValue = updatedComponent.props[key]
+          const oldValue = Array.isArray(key) ? key.map(key => updatedComponent.props[key]) : updatedComponent.props[key]
           this.histories.push({
             id: uuidv4(),
             componentId: id || this.currentElement,
             type: 'modify',
             data: { oldValue, newValue: value, key },
           })
-          updatedComponent.props[key] = value
+          if (!this.cachedOldValues)
+            this.cachedOldValues = oldValue
+
+          if (Array.isArray(key) && Array.isArray(value)) {
+            key.forEach((keyName, index) => {
+              updatedComponent.props[keyName] = value[index]
+            })
+          }
+          else if (typeof key === 'string' && typeof value === 'string') {
+            updatedComponent.props[key] = value
+          }
         }
       }
     },
@@ -308,6 +327,31 @@ export const useEditorStore = defineStore({
         default:
           break
       }
+    },
+    redo() {
+      // can't redo when historyIndex is the last item or historyIndex is never moved
+      if (this.historyIndex === -1)
+        return
+
+      // get the record
+      const history = this.histories[this.historyIndex]
+      // process the history data
+      switch (history.type) {
+        case 'add':
+          this.components.push(history.data)
+          // state.components = insertAt(state.components, history.index as number, history.data)
+          break
+        case 'delete':
+          this.components = this.components.filter(component => component.id !== history.componentId)
+          break
+        // case 'modify': {
+        //   modifyHistory(state, history, 'redo')
+        //   break
+        // }
+        default:
+          break
+      }
+      this.historyIndex++
     },
   },
 })
