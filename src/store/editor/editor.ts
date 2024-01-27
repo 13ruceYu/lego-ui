@@ -54,6 +54,7 @@ export interface EditorProps {
   histories: HistoryProps[]
   historyIndex: number
   cachedOldValues?: any
+  maxHistoryNumber: number
 }
 
 export interface IUploadPayload {
@@ -170,6 +171,7 @@ export const useEditorStore = defineStore({
     histories: [],
     historyIndex: -1,
     cachedOldValues: null,
+    maxHistoryNumber: 5,
   }),
   getters: {
     getCurrentElement(state) {
@@ -257,8 +259,8 @@ export const useEditorStore = defineStore({
         }
       }
     },
-    debounceHistory: _debounceChange(function (this: EditorProps, { key, value, id }: UpdateComponentData) {
-      this.histories.push({
+    debounceHistory: _debounceChange(function (this: any, { key, value, id }: UpdateComponentData) {
+      this.pushHistory({
         id: uuidv4(),
         componentId: id,
         type: 'modify',
@@ -266,6 +268,26 @@ export const useEditorStore = defineStore({
       })
       this.cachedOldValues = null
     }),
+    pushHistory(historyRecord: HistoryProps) {
+      // check historyIndex is already moved
+      if (this.historyIndex !== -1) {
+        // if moved, delete all the records greater than the index
+        this.histories = this.histories.slice(0, this.historyIndex)
+        // move historyIndex to unmoved
+        this.historyIndex = -1
+      }
+      // check length
+      if (this.histories.length < this.maxHistoryNumber) {
+        this.histories.push(historyRecord)
+      }
+      else {
+        // larger than max number
+        // shift the first
+        // push to last
+        this.histories.shift()
+        this.histories.push(historyRecord)
+      }
+    },
     updateComponent(payload: UpdateComponentData) {
       const { id, key, value, isRoot } = payload
       const updatedComponent = this.components.find(comp => comp.id === (id || this.currentElement))
