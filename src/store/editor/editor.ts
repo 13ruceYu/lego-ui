@@ -148,6 +148,16 @@ const pageDefaultProps = {
   height: '560px',
 }
 
+function _debounceChange(func: Function, delay = 1000) {
+  let timer: ReturnType<typeof setTimeout>
+  return function (this: any, ...args: any[]) {
+    clearTimeout(timer)
+    timer = setTimeout(() => {
+      func.apply(this, args)
+    }, delay)
+  }
+}
+
 export const useEditorStore = defineStore({
   id: 'editor',
   state: (): EditorProps => ({
@@ -230,6 +240,32 @@ export const useEditorStore = defineStore({
     setActive(id: string) {
       this.currentElement = id
     },
+    modifyHistory(history: HistoryProps, type: 'undo' | 'redo') {
+      const { componentId, data } = history
+      const { key, oldValue, newValue } = data
+      const newKey = key as keyof AllComponentProps | Array<keyof AllComponentProps>
+      const updatedComponent = this.components.find(component => component.id === componentId)
+      if (updatedComponent) {
+        // check if key is array
+        if (Array.isArray(newKey)) {
+          newKey.forEach((keyName, index) => {
+            updatedComponent.props[keyName] = type === 'undo' ? oldValue[index] : newValue[index]
+          })
+        }
+        else {
+          updatedComponent.props[newKey] = type === 'undo' ? oldValue : newValue
+        }
+      }
+    },
+    debounceHistory: _debounceChange(function (this: EditorProps, { key, value, id }: UpdateComponentData) {
+      this.histories.push({
+        id: uuidv4(),
+        componentId: id,
+        type: 'modify',
+        data: { oldValue: this.cachedOldValues, key, newValue: value },
+      })
+      this.cachedOldValues = null
+    }),
     updateComponent(payload: UpdateComponentData) {
       const { id, key, value, isRoot } = payload
       const updatedComponent = this.components.find(comp => comp.id === (id || this.currentElement))
@@ -239,12 +275,7 @@ export const useEditorStore = defineStore({
         }
         else {
           const oldValue = Array.isArray(key) ? key.map(key => updatedComponent.props[key]) : updatedComponent.props[key]
-          this.histories.push({
-            id: uuidv4(),
-            componentId: id || this.currentElement,
-            type: 'modify',
-            data: { oldValue, newValue: value, key },
-          })
+          this.debounceHistory({ key, value, id: this.currentElement })
           if (!this.cachedOldValues)
             this.cachedOldValues = oldValue
 
@@ -317,11 +348,7 @@ export const useEditorStore = defineStore({
           this.components = insertAt(this.components, history.index as number, history)
           break
         case 'modify': {
-          const { componentId, data } = history
-          const { key, oldValue } = data
-          const updateComponent = this.components.find(comp => comp.id === componentId)
-          if (updateComponent)
-            updateComponent.props[key] = oldValue
+          this.modifyHistory(history, 'undo')
           break
         }
         default:
@@ -344,10 +371,10 @@ export const useEditorStore = defineStore({
         case 'delete':
           this.components = this.components.filter(component => component.id !== history.componentId)
           break
-        // case 'modify': {
-        //   modifyHistory(state, history, 'redo')
-        //   break
-        // }
+        case 'modify': {
+          this.modifyHistory(history, 'redo')
+          break
+        }
         default:
           break
       }

@@ -48,7 +48,7 @@ describe('test editor store', () => {
       value: 'update',
     }
     editorStore.setActive(testComponents[0].id)
-    editorStore.updateComponent({ key: newProps.key, value: newProps.value })
+    editorStore.updateComponent({ id: testComponents[0].id, key: newProps.key, value: newProps.value })
     const curEl = editorStore.getCurrentElement
     expect(curEl?.props.text).toBe(newProps.value)
   })
