@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import routes from './routes'
+import { axios } from '@/api/axios'
 import { useUserStore } from '@/store/user/user'
 
 const router = createRouter({
@@ -15,30 +16,29 @@ router.beforeEach(async (to) => {
   const { title, requiredLogin, redirectAlreadyLogin } = to.meta
   if (title)
     document.title = title as string
-  // TODO: open router auth
-  // if (!isLogin) {
-  //   if (token) {
-  //     axios.defaults.headers.common.Authorization = `Bearer ${token}`
-  //     try {
-  //       await userStore.fetchCurrentUser()
-  //       if (redirectAlreadyLogin)
-  //         return '/'
-  //     }
-  //     catch {
-  //       window.$message.error('登录状态已过期', 2)
-  //       userStore.logout()
-  //       return '/login'
-  //     }
-  //   }
-  //   else {
-  //     if (requiredLogin)
-  //       return { name: 'login' }
-  //   }
-  // }
-  // else {
-  //   if (redirectAlreadyLogin)
-  //     return '/'
-  // }
+  if (!isLogin) {
+    if (token) {
+      axios.defaults.headers.common.Authorization = `Bearer ${token}`
+      try {
+        await userStore.fetchCurrentUser()
+        if (redirectAlreadyLogin)
+          return '/'
+      }
+      catch {
+        window.$message.error('登录状态已过期', 2)
+        userStore.logout()
+        return '/login'
+      }
+    }
+    else {
+      if (requiredLogin)
+        return { name: 'login' }
+    }
+  }
+  else {
+    if (redirectAlreadyLogin)
+      return '/'
+  }
 })
 
 export default router

@@ -13,7 +13,7 @@ export default defineComponent({
       message.success('退出登录成功，2秒后跳转到首页', 2)
       userStore.logout()
       setTimeout(() => {
-        router.push('/')
+        router.push('/login')
       }, 2000)
     }
     return {

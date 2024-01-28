@@ -38,8 +38,11 @@ export interface IComponentData {
 }
 
 export interface PageData {
-  props: PageProps
-  title: string
+  id?: string
+  title?: string
+  desc?: string
+  coverImg?: string
+  props?: PageProps
 }
 
 export interface EditorProps {
@@ -349,7 +352,7 @@ export const useEditorStore = defineStore({
       }
     },
     updatePage({ key, value }: IUploadPayload) {
-      this.page.props[key as keyof PageProps] = value
+      this.page.props && (this.page.props[key as keyof PageProps] = value)
     },
     undo() {
       // never undo before

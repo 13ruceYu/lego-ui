@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { pickBy } from 'lodash'
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
+import { useRoute } from 'vue-router'
 import HistoryArea from './HistoryArea.vue'
 import { useEditorStore } from '@/store/editor/editor'
 import LText from '@/components/LText.vue'
@@ -13,6 +14,7 @@ import PropsTable from '@/components/PropsTable.vue'
 import { defaultTextTemplates } from '@/constants/defaultTemplates'
 import { initHotKeys } from '@/plugins/hotKeys'
 import { initContextMenu } from '@/plugins/contextMenu'
+import { getMyWork } from '@/api/modules/works'
 
 interface compMap {
   [key: string]: object
@@ -26,6 +28,17 @@ const editorStore = useEditorStore()
 const currentElement = computed(() => editorStore.getCurrentElement)
 const page = computed(() => editorStore.page)
 const activeKey = ref('1')
+
+onMounted(async () => {
+  const route = useRoute()
+  const res = await getMyWork(route.params.id as string)
+  const { content, ...rest } = res
+  editorStore.page = { ...editorStore.page, ...rest }
+  if (content.props)
+    editorStore.page.props = content.props
+
+  editorStore.components = content.components
+})
 
 function addItem(props: any) {
   editorStore.addComponent(props)
