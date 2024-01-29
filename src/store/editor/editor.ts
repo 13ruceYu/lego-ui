@@ -152,7 +152,7 @@ const pageDefaultProps = {
   height: '560px',
 }
 
-function _debounceChange(func: Function, delay = 1000) {
+function _debounceChange(func: Function, delay = 500) {
   let timer: ReturnType<typeof setTimeout>
   return function (this: any, ...args: any[]) {
     clearTimeout(timer)
@@ -174,7 +174,7 @@ export const useEditorStore = defineStore({
     histories: [],
     historyIndex: -1,
     cachedOldValues: null,
-    maxHistoryNumber: 5,
+    maxHistoryNumber: 10,
   }),
   getters: {
     getCurrentElement(state) {
@@ -300,7 +300,7 @@ export const useEditorStore = defineStore({
         }
         else {
           const oldValue = Array.isArray(key) ? key.map(key => updatedComponent.props[key]) : updatedComponent.props[key]
-          this.debounceHistory({ key, value, id: this.currentElement })
+          this.debounceHistory({ key, value, id })
           if (!this.cachedOldValues)
             this.cachedOldValues = oldValue
 

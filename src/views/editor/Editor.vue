@@ -76,10 +76,10 @@ function updatePosition(data: { left: number; top: number; id: string }) {
       <ComponentsList :list="defaultTextTemplates" @on-item-click="addItem" />
     </div>
     <!-- TODO: when canvas position relative, item move position error -->
-    <div class="flex-1 border-2 border-red-400 canvas relative">
+    <div class="relative flex-1 border-2 border-red-400 canvas">
       <h1>画布</h1>
       <HistoryArea />
-      <div id="canvas-area" class="relative m-auto frame w-80 h-96 bg-slate-200" :style="page.props">
+      <div id="canvas-area" class="relative m-auto frame w-[360px] h-[600px] bg-slate-200 border border-pink-800" :style="page.props">
         <EditWrapper
           v-for="(comp, index) in editorStore.components"
           :id="comp.id"

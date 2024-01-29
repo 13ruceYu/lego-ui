@@ -25,42 +25,39 @@ interface OriginalPositions {
   top: number
   bottom: number
 }
+interface Coordinate {
+  x: number
+  y: number
+}
 
 const wrapperEl = ref<null | HTMLElement>()
 const styleFromChild = computed(() => pick(props.props, ['height', 'width', 'top', 'left', 'position']))
 
-const gap = {
-  x: 0,
-  y: 0,
-}
-
 let isMoved = false
 
-function calcMovePosition(e: MouseEvent) {
-  const elContainer = document.getElementById('canvas-area') as HTMLElement
-  const left = e.clientX - gap.x - elContainer.offsetLeft
-  const top = e.clientY - gap.y - elContainer.offsetTop
+function calcMovePosition(e: MouseEvent, startTargetPosition: Coordinate, startMousePosition: Coordinate) {
+  const mouseOffsetX = e.clientX - startMousePosition.x
+  const mouseOffsetY = e.clientY - startMousePosition.y
+  const left = startTargetPosition.x + mouseOffsetX
+  const top = startTargetPosition.y + mouseOffsetY
   return { left, top }
 }
 
 function startMove(e: MouseEvent) {
   const curEl = wrapperEl.value
-  if (curEl) {
-    const { left, top } = curEl.getBoundingClientRect()
-    gap.x = e.clientX - left
-    gap.y = e.clientY - top
-  }
+  const startMousePosition = { x: e.clientX, y: e.clientY }
+  const startTargetPosition = { x: curEl?.offsetLeft || 0, y: curEl?.offsetTop || 0 }
   function handleMove(e: MouseEvent) {
     isMoved = true
-    const { left, top } = calcMovePosition(e)
     if (curEl) {
+      const { left, top } = calcMovePosition(e, startTargetPosition, startMousePosition)
       curEl.style.top = `${top}px`
       curEl.style.left = `${left}px`
     }
   }
   function handleMouseUp(e: MouseEvent) {
-    if (isMoved) {
-      const { left, top } = calcMovePosition(e)
+    if (isMoved && curEl) {
+      const { left, top } = calcMovePosition(e, startTargetPosition, startMousePosition)
       emits('updatePosition', { id: props.id, left, top })
       isMoved = false
     }
