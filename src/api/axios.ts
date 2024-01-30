@@ -23,7 +23,7 @@ const baseRequestConfig: AxiosRequestConfig = {
   baseURL:
     import.meta.env.MODE === 'development'
       ? '/api'
-      : `${import.meta.env.VITE_APP_PROD_WEB_URL}/api`,
+      : `${import.meta.env.VITE_APP_BASE_URL}/api`,
   timeout: 20000,
   // TODO: when post or put data include array, below code will transform to object, why?
   // transformRequest: (params) => {
