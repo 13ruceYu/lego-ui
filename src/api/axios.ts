@@ -1,7 +1,5 @@
 import type { AxiosRequestConfig, AxiosResponse } from 'axios'
 import axios from 'axios'
-import qs from 'qs'
-import _ from 'lodash'
 import { useGlobalStore } from '@/store/global/global'
 import utils from '@/utils'
 import type { RespType } from '@/types/respType'
@@ -27,15 +25,16 @@ const baseRequestConfig: AxiosRequestConfig = {
       ? '/api'
       : `${import.meta.env.VITE_APP_PROD_WEB_URL}/api`,
   timeout: 20000,
-  transformRequest: (params) => {
-    if (_.isPlainObject(params))
-      return qs.stringify(params, { arrayFormat: 'repeat' })
-    else
-      return params
-  },
-  paramsSerializer: (params) => {
-    return qs.stringify(params, { arrayFormat: 'repeat' })
-  },
+  // TODO: when post or put data include array, below code will transform to object, why?
+  // transformRequest: (params) => {
+  //   if (_.isPlainObject(params))
+  //     return qs.stringify(params, { arrayFormat: 'repeat' })
+  //   else
+  //     return params
+  // },
+  // paramsSerializer: (params) => {
+  //   return qs.stringify(params, { arrayFormat: 'repeat' })
+  // },
 }
 
 const service = axios.create(baseRequestConfig)

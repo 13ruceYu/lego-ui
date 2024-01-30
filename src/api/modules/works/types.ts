@@ -7,3 +7,10 @@ export interface WorkRes extends Omit<PageData, 'props'> {
     props?: PageProps
   }
 }
+
+export interface WorkUpdatePayload extends PageData {
+  content: {
+    components: IComponentData[]
+    props?: PageProps
+  }
+}

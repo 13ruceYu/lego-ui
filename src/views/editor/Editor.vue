@@ -14,7 +14,7 @@ import PropsTable from '@/components/PropsTable.vue'
 import { defaultTextTemplates } from '@/constants/defaultTemplates'
 import { initHotKeys } from '@/plugins/hotKeys'
 import { initContextMenu } from '@/plugins/contextMenu'
-import { getMyWork } from '@/api/modules/works'
+import { getMyWork, updateMyWork } from '@/api/modules/works'
 
 interface compMap {
   [key: string]: object
@@ -28,10 +28,11 @@ const editorStore = useEditorStore()
 const currentElement = computed(() => editorStore.getCurrentElement)
 const page = computed(() => editorStore.page)
 const activeKey = ref('1')
+const route = useRoute()
+const workId = route.params.id as string
 
 onMounted(async () => {
-  const route = useRoute()
-  const res = await getMyWork(route.params.id as string)
+  const res = await getMyWork(workId)
   const { content, ...rest } = res
   editorStore.page = { ...editorStore.page, ...rest }
   if (content.props)
@@ -67,15 +68,36 @@ function updatePosition(data: { left: number; top: number; id: string }) {
   const valuesArr = Object.values(updatedData).map(v => `${v}px`)
   editorStore.updateComponent({ id, key: keysArr, value: valuesArr })
 }
+
+async function updateWork() {
+  const { page, components } = editorStore
+  await updateMyWork(workId, {
+    title: page.title,
+    desc: page.desc,
+    content: {
+      components,
+      props: page.props,
+    },
+  })
+}
 </script>
 
 <template>
-  <div class="editor [&>*]:m-2 flex justify-between h-screen border-2 border-blue-400">
+  <header class="border-2 border-orange-300 bg-slate-300 h-12 flex items-center justify-between px-4">
+    <div>
+      {{ page.title }}
+    </div>
+    <div>
+      <a-button @click="updateWork">
+        保存
+      </a-button>
+    </div>
+  </header>
+  <div class="editor [&>*]:m-2 flex justify-between h-[calc(100vh-3rem)] border-2 border-blue-400">
     <div class="border-2 border-yellow-400 component-list w-60">
       <h1>组件列表</h1>
       <ComponentsList :list="defaultTextTemplates" @on-item-click="addItem" />
     </div>
-    <!-- TODO: when canvas position relative, item move position error -->
     <div class="relative flex-1 border-2 border-red-400 canvas">
       <h1>画布</h1>
       <HistoryArea />
