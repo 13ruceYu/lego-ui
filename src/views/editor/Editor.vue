@@ -136,7 +136,7 @@ async function updateWork() {
           <LayerList :list="editorStore.components" :selected-id="currentElement?.id" @change="handleChange" @select="setActive" />
         </a-tab-pane>
         <a-tab-pane key="3" tab="页面设置" force-render>
-          <PropsTable :props="page.props" @change="pageChange" />
+          <PropsTable :props="page.props || {}" @change="pageChange" />
         </a-tab-pane>
       </a-tabs>
     </div>

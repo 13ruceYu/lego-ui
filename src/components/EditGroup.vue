@@ -38,7 +38,7 @@ export default defineComponent({
   },
   props: {
     props: {
-      type: Object as PropType<AllComponentProps>,
+      type: Object,
       required: true,
     },
     groups: {

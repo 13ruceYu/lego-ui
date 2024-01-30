@@ -5,6 +5,7 @@ import { computed, reactive, ref } from 'vue'
 import { v4 as uuidv4 } from 'uuid'
 import { DeleteOutlined } from '@ant-design/icons-vue'
 import { last } from 'lodash'
+import { useUserStore } from '@/store/user/user'
 
 const props = defineProps({
   action: {
@@ -33,6 +34,7 @@ const props = defineProps({
 })
 
 const emits = defineEmits(['success'])
+const userStore = useUserStore()
 
 defineExpose({
   uploadFiles,
@@ -106,7 +108,8 @@ async function postFile(readyFile: IUploadFile) {
     const resp = await axios.post(props.action, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
-        'Authorization': `Bearer ${import.meta.env.VITE_TOKEN}`,
+        // TODO: replace token and redesign
+        'Authorization': `Bearer ${userStore.token}`,
       },
     })
     readyFile.status = 'success'

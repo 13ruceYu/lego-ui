@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { PropType, VNode } from 'vue'
+import type { VNode } from 'vue'
 import { computed } from 'vue'
 import { reduce } from 'lodash'
 import ColorPicker from './ColorPicker.vue'
@@ -13,7 +13,7 @@ import { mapPropsToForms } from '@/constants/propsMap'
 
 const props = defineProps({
   props: {
-    type: Object as PropType<Partial<TextComponentProps>>,
+    type: Object,
     required: true,
   },
 })
