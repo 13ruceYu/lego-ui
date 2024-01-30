@@ -4,9 +4,7 @@ import { axios } from '@/api/axios'
 import { useUserStore } from '@/store/user/user'
 
 const router = createRouter({
-  history: createWebHistory(
-    import.meta.env.MODE === 'production' ? '/dolphinscheduler/ui/' : '/',
-  ),
+  history: createWebHistory(),
   routes,
 })
 
