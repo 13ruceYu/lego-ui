@@ -58,6 +58,7 @@ export interface EditorProps {
   historyIndex: number
   cachedOldValues?: any
   maxHistoryNumber: number
+  isDirty: boolean
 }
 
 export interface IUploadPayload {
@@ -175,6 +176,7 @@ export const useEditorStore = defineStore({
     historyIndex: -1,
     cachedOldValues: null,
     maxHistoryNumber: 10,
+    isDirty: false,
   }),
   getters: {
     getCurrentElement(state) {
@@ -218,6 +220,7 @@ export const useEditorStore = defineStore({
       }
     },
     pasteCopiedComponent() {
+      this.isDirty = true
       if (this.copiedComponent) {
         const clone = cloneDeep(this.copiedComponent)
         clone.id = uuidv4()
@@ -233,6 +236,7 @@ export const useEditorStore = defineStore({
       }
     },
     addComponent(componentData: IComponentData) {
+      this.isDirty = true
       const comp = { ...componentData, layerName: `图层-${this.components.length + 1}` }
       this.components.push(comp)
       this.histories.push({
@@ -292,6 +296,7 @@ export const useEditorStore = defineStore({
       }
     },
     updateComponent(payload: UpdateComponentData) {
+      this.isDirty = true
       const { id, key, value, isRoot } = payload
       const updatedComponent = this.components.find(comp => comp.id === (id || this.currentElement))
       if (updatedComponent) {
@@ -316,6 +321,7 @@ export const useEditorStore = defineStore({
       }
     },
     deleteComponent(id: string) {
+      this.isDirty = true
       const curComp = this.getElement(id)
       if (curComp) {
         this.components = this.components.filter(comp => comp.id !== id)
@@ -330,6 +336,7 @@ export const useEditorStore = defineStore({
       }
     },
     moveComponent(data: { direction: MoveDirection; amount: number; id: string }) {
+      this.isDirty = true
       const { direction, amount, id } = data
       const curEl = this.getElement(id)
       if (curEl) {
@@ -352,6 +359,7 @@ export const useEditorStore = defineStore({
       }
     },
     updatePage({ key, value }: IUploadPayload) {
+      this.isDirty = true
       this.page.props && (this.page.props[key as keyof PageProps] = value)
     },
     undo() {

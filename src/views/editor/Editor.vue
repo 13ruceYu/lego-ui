@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { pickBy } from 'lodash'
-import { computed, onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { onBeforeRouteLeave, useRoute } from 'vue-router'
+import { Modal } from 'ant-design-vue'
 import HistoryArea from './HistoryArea.vue'
 import { useEditorStore } from '@/store/editor/editor'
 import LText from '@/components/LText.vue'
@@ -30,6 +31,8 @@ const page = computed(() => editorStore.page)
 const activeKey = ref('1')
 const route = useRoute()
 const workId = route.params.id as string
+let timer: ReturnType<typeof setInterval>
+const saveLoading = ref(false)
 
 onMounted(async () => {
   const res = await getMyWork(workId)
@@ -39,6 +42,35 @@ onMounted(async () => {
     editorStore.page.props = content.props
 
   editorStore.components = content.components
+  timer = setInterval(() => {
+    if (editorStore.isDirty)
+      saveWork()
+  }, 1000 * 5)
+})
+
+onUnmounted(() => {
+  clearInterval(timer)
+})
+
+onBeforeRouteLeave((to, from, next) => {
+  if (editorStore.isDirty) {
+    Modal.confirm({
+      title: '作品还未保存，是否保存？',
+      okText: '保存',
+      okType: 'primary',
+      cancelText: '不保存',
+      onOk: async () => {
+        await saveWork()
+        next()
+      },
+      onCancel() {
+        next()
+      },
+    })
+  }
+  else {
+    next()
+  }
 })
 
 function addItem(props: any) {
@@ -69,7 +101,8 @@ function updatePosition(data: { left: number; top: number; id: string }) {
   editorStore.updateComponent({ id, key: keysArr, value: valuesArr })
 }
 
-async function updateWork() {
+async function saveWork() {
+  saveLoading.value = true
   const { page, components } = editorStore
   await updateMyWork(workId, {
     title: page.title,
@@ -79,16 +112,20 @@ async function updateWork() {
       props: page.props,
     },
   })
+  saveLoading.value = false
+  editorStore.isDirty = false
 }
 </script>
 
 <template>
   <header class="border-2 border-orange-300 bg-slate-300 h-12 flex items-center justify-between px-4">
     <div>
-      {{ page.title }}
+      <router-link to="/">
+        Home
+      </router-link>{{ page.title }}
     </div>
     <div>
-      <a-button @click="updateWork">
+      <a-button :loading="saveLoading" @click="saveWork">
         保存
       </a-button>
     </div>
