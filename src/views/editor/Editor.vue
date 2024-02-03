@@ -2,7 +2,6 @@
 import { pickBy } from 'lodash'
 import { computed, nextTick, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import html2canvas from 'html2canvas'
 import HistoryArea from './HistoryArea.vue'
 import { useSaveWork } from './useSaveWork'
 import { useEditorStore } from '@/store/editor/editor'
@@ -17,6 +16,7 @@ import { defaultTextTemplates } from '@/constants/defaultTemplates'
 import { initHotKeys } from '@/plugins/hotKeys'
 import { initContextMenu } from '@/plugins/contextMenu'
 import { getMyWork } from '@/api/modules/works'
+import { takeScreenshotAndUpload } from '@/utils/helper'
 
 interface compMap {
   [key: string]: object
@@ -50,11 +50,12 @@ async function publish() {
   const el = document.getElementById('canvas-area') as HTMLElement
   canvasFix.value = true
   await nextTick()
-  html2canvas(el, { width: 375, useCORS: true, scale: 1 }).then((canvas) => {
+  const data = await takeScreenshotAndUpload(el)
+  if (data) {
     const image = document.getElementById('test-image') as HTMLImageElement
-    image.src = canvas.toDataURL()
+    image.src = data.urls[0]
     canvasFix.value = false
-  })
+  }
 }
 
 function addItem(props: any) {

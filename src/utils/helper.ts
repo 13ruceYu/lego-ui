@@ -1,4 +1,6 @@
 import { message } from 'ant-design-vue'
+import html2canvas from 'html2canvas'
+import { uploadImage } from '@/api/modules/utils'
 
 interface CheckCondition {
   format?: string[]
@@ -65,4 +67,29 @@ export function insertAt(arr: any[], index: number, newItem: any) {
     newItem,
     ...arr.slice(index),
   ]
+}
+
+export async function uploadFile(file: Blob, fileName = 'default.png') {
+  const newFile = file instanceof File ? file : new File([file], fileName)
+  const formData = new FormData()
+  formData.append(newFile.name, newFile)
+  const urls = await uploadImage(formData)
+  return urls
+}
+
+function getCanvasBlob(canvas: HTMLCanvasElement) {
+  return new Promise<Blob | null>((resolve) => {
+    canvas.toBlob((blob) => {
+      resolve(blob)
+    })
+  })
+}
+
+export async function takeScreenshotAndUpload(el: HTMLElement) {
+  const canvas = await html2canvas(el, { width: 375, useCORS: true, scale: 1 })
+  const canvasBlob = await getCanvasBlob(canvas)
+  if (canvasBlob) {
+    const data = await uploadFile(canvasBlob)
+    return data
+  }
 }
