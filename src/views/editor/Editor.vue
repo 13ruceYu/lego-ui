@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { pickBy } from 'lodash'
-import { computed, onMounted, ref } from 'vue'
+import { computed, nextTick, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
+import html2canvas from 'html2canvas'
 import HistoryArea from './HistoryArea.vue'
 import { useSaveWork } from './useSaveWork'
 import { useEditorStore } from '@/store/editor/editor'
@@ -32,6 +33,7 @@ const activeKey = ref('1')
 const route = useRoute()
 const workId = route.params.id as string
 const { saveLoading, saveWork } = useSaveWork()
+const canvasFix = ref(false)
 
 onMounted(async () => {
   const res = await getMyWork(workId)
@@ -42,6 +44,18 @@ onMounted(async () => {
 
   editorStore.components = content.components
 })
+
+async function publish() {
+  editorStore.setActive('')
+  const el = document.getElementById('canvas-area') as HTMLElement
+  canvasFix.value = true
+  await nextTick()
+  html2canvas(el, { width: 375, useCORS: true, scale: 1 }).then((canvas) => {
+    const image = document.getElementById('test-image') as HTMLImageElement
+    image.src = canvas.toDataURL()
+    canvasFix.value = false
+  })
+}
 
 function addItem(props: any) {
   editorStore.addComponent(props)
@@ -80,6 +94,9 @@ function updatePosition(data: { left: number; top: number; id: string }) {
       </router-link>{{ page.title }}
     </div>
     <div>
+      <a-button @click="publish">
+        发布
+      </a-button>
       <a-button :loading="saveLoading" @click="saveWork">
         保存
       </a-button>
@@ -89,11 +106,12 @@ function updatePosition(data: { left: number; top: number; id: string }) {
     <div class="border-2 border-yellow-400 component-list w-60">
       <h1>组件列表</h1>
       <ComponentsList :list="defaultTextTemplates" @on-item-click="addItem" />
+      <img id="test-image" style="width: 300px;">
     </div>
     <div class="relative flex-1 border-2 border-red-400 canvas">
       <h1>画布</h1>
       <HistoryArea />
-      <div id="canvas-area" class="relative m-auto frame w-[360px] h-[600px] bg-slate-200 border border-pink-800" :style="page.props">
+      <div id="canvas-area" :class="{ 'canvas-fix': canvasFix }" class="relative m-auto frame w-[360px] h-[600px] bg-slate-200 border border-pink-800" :style="page.props">
         <EditWrapper
           v-for="(comp, index) in editorStore.components"
           :id="comp.id"
@@ -134,3 +152,9 @@ function updatePosition(data: { left: number; top: number; id: string }) {
     </div>
   </div>
 </template>
+
+<style scoped>
+.canvas-fix .edit-wrapper > * {
+  box-shadow: none !important;
+}
+</style>
