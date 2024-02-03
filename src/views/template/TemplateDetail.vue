@@ -1,14 +1,24 @@
 <script lang="ts">
-import { computed, defineComponent } from 'vue'
+import { defineComponent, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { useTemplateStore } from '@/store/template/template'
+import { getTemplateById } from '@/api/modules/works'
+import type { Template } from '@/api/modules/works/types'
 
 export default defineComponent({
   setup() {
     const route = useRoute()
-    const store = useTemplateStore()
-    const currentId = route.params.id as string
-    const template = computed(() => store.getTemplateById(parseInt(currentId)))
+    const currentId = ref<string | null>(route.params.id as string | null)
+    const template = ref<Template | null>(null)
+
+    const fetchTemplate = async () => {
+      if (currentId.value) {
+        const templateRes = await getTemplateById(currentId.value)
+        template.value = templateRes
+      }
+    }
+
+    onMounted(fetchTemplate)
+
     return {
       route,
       template,

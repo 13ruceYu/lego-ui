@@ -1,4 +1,4 @@
-import type { WorkRes, WorkUpdatePayload } from './types'
+import type { Template, TemplateListRes, WorkRes, WorkUpdatePayload } from './types'
 import { axios } from '@/api/axios'
 
 export function getMyWork(workId: string) {
@@ -13,5 +13,19 @@ export function updateMyWork(workId: string, data: WorkUpdatePayload) {
     url: `/works/${workId}`,
     method: 'patch',
     data,
+  })
+}
+
+export function getTemplateById(templateId: string) {
+  return axios<Template>({
+    url: `/templates/${templateId}`,
+    method: 'get',
+  })
+}
+
+export function getCommonTemplates() {
+  return axios<TemplateListRes>({
+    method: 'get',
+    url: '/templates',
   })
 }
