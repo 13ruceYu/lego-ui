@@ -17,6 +17,7 @@ export function useSaveWork() {
     await updateMyWork(workId, {
       title: page.title,
       desc: page.desc,
+      coverImg: page.coverImg,
       content: {
         components,
         props: page.props,

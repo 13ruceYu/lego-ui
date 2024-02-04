@@ -358,9 +358,12 @@ export const useEditorStore = defineStore({
         }
       }
     },
-    updatePage({ key, value }: IUploadPayload) {
+    updatePage({ key, value, isRoot }: IUploadPayload) {
       this.isDirty = true
-      this.page.props && (this.page.props[key as keyof PageProps] = value)
+      if (isRoot)
+        this.page[key as keyof PageData] = value
+      else
+        this.page.props && (this.page.props[key as keyof PageProps] = value)
     },
     undo() {
       // never undo before

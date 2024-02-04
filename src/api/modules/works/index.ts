@@ -29,3 +29,10 @@ export function getCommonTemplates() {
     url: '/templates',
   })
 }
+
+export function publishWork(workId: string) {
+  return axios({
+    method: 'post',
+    url: `/works/publish/${workId}`,
+  })
+}

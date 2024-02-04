@@ -15,7 +15,7 @@ import PropsTable from '@/components/PropsTable.vue'
 import { defaultTextTemplates } from '@/constants/defaultTemplates'
 import { initHotKeys } from '@/plugins/hotKeys'
 import { initContextMenu } from '@/plugins/contextMenu'
-import { getMyWork } from '@/api/modules/works'
+import { getMyWork, publishWork } from '@/api/modules/works'
 import { takeScreenshotAndUpload } from '@/utils/helper'
 
 interface compMap {
@@ -34,6 +34,7 @@ const route = useRoute()
 const workId = route.params.id as string
 const { saveLoading, saveWork } = useSaveWork()
 const canvasFix = ref(false)
+const publishLoading = ref(false)
 
 onMounted(async () => {
   const res = await getMyWork(workId)
@@ -46,16 +47,24 @@ onMounted(async () => {
 })
 
 async function publish() {
+  publishLoading.value = true
   editorStore.setActive('')
   const el = document.getElementById('canvas-area') as HTMLElement
   canvasFix.value = true
   await nextTick()
+  // take screenshot and upload
   const data = await takeScreenshotAndUpload(el)
   if (data) {
-    const image = document.getElementById('test-image') as HTMLImageElement
-    image.src = data.urls[0]
+    // update page coverImg in store
+    editorStore.updatePage({ key: 'coverImg', value: data[0], isRoot: true })
+    // save work
+    await saveWork()
+    // publish work
+    await publishWork(workId)
+
     canvasFix.value = false
   }
+  publishLoading.value = true
 }
 
 function addItem(props: any) {
@@ -95,7 +104,7 @@ function updatePosition(data: { left: number; top: number; id: string }) {
       </router-link>{{ page.title }}
     </div>
     <div>
-      <a-button @click="publish">
+      <a-button :loading="publishLoading" @click="publish">
         发布
       </a-button>
       <a-button :loading="saveLoading" @click="saveWork">
@@ -107,7 +116,6 @@ function updatePosition(data: { left: number; top: number; id: string }) {
     <div class="border-2 border-yellow-400 component-list w-60">
       <h1>组件列表</h1>
       <ComponentsList :list="defaultTextTemplates" @on-item-click="addItem" />
-      <img id="test-image" style="width: 300px;">
     </div>
     <div class="relative flex-1 border-2 border-red-400 canvas">
       <h1>画布</h1>
