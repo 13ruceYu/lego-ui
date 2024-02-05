@@ -17,6 +17,7 @@ import { initHotKeys } from '@/plugins/hotKeys'
 import { initContextMenu } from '@/plugins/contextMenu'
 import { getMyWork, publishWork } from '@/api/modules/works'
 import { takeScreenshotAndUpload } from '@/utils/helper'
+import { createChannel, getWorkChannel } from '@/api/modules/channel'
 
 interface compMap {
   [key: string]: object
@@ -61,6 +62,10 @@ async function publish() {
     await saveWork()
     // publish work
     await publishWork(workId)
+    // get channel list
+    const channels = await getWorkChannel(workId)
+    if (channels.list.length === 0)
+      await createChannel({ name: '默认', workId: parseInt(workId) })
 
     canvasFix.value = false
   }
