@@ -30,7 +30,7 @@ export function getCommonTemplates() {
   })
 }
 
-export function publishWork(workId: string) {
+export function publishWork(workId: number) {
   return axios({
     method: 'post',
     url: `/works/publish/${workId}`,

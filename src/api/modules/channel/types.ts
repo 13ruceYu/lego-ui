@@ -1,7 +1,7 @@
 export interface ChannelList {
   count: number
   list: {
-    id: number
+    id: string
     name: string
     workId: number
     status: number
@@ -13,4 +13,9 @@ export interface ChannelList {
 export interface CreateChannelPayload {
   workId: number
   name: string
+}
+
+export interface CreateChannelRes {
+  name: string
+  id: string
 }

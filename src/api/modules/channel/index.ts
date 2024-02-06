@@ -1,7 +1,7 @@
-import type { ChannelList, CreateChannelPayload } from './types'
+import type { ChannelList, CreateChannelPayload, CreateChannelRes } from './types'
 import { axios } from '@/api/axios'
 
-export function getWorkChannel(workId: string) {
+export function getWorkChannel(workId: number) {
   return axios<ChannelList>({
     url: `/channel/getWorkChannel/${workId}`,
     method: 'get',
@@ -9,9 +9,16 @@ export function getWorkChannel(workId: string) {
 }
 
 export function createChannel(data: CreateChannelPayload) {
-  return axios({
+  return axios<CreateChannelRes>({
     method: 'post',
     url: '/channel',
     data,
+  })
+}
+
+export function deleteChannel(channelId: string) {
+  return axios({
+    method: 'delete',
+    url: `/channel/${channelId}`,
   })
 }

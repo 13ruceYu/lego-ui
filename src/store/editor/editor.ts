@@ -43,6 +43,14 @@ export interface PageData {
   desc?: string
   coverImg?: string
   props?: PageProps
+  uuid?: string
+}
+
+export interface ChannelProps {
+  id: string
+  name: string
+  workId: number
+  status?: number
 }
 
 export interface EditorProps {
@@ -59,6 +67,7 @@ export interface EditorProps {
   cachedOldValues?: any
   maxHistoryNumber: number
   isDirty: boolean
+  channels: ChannelProps[]
 }
 
 export interface IUploadPayload {
@@ -177,6 +186,7 @@ export const useEditorStore = defineStore({
     cachedOldValues: null,
     maxHistoryNumber: 10,
     isDirty: false,
+    channels: [],
   }),
   getters: {
     getCurrentElement(state) {

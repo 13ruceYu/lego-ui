@@ -1,5 +1,6 @@
 import { message } from 'ant-design-vue'
 import html2canvas from 'html2canvas'
+import QRCode from 'qrcode'
 import { uploadImage } from '@/api/modules/utils'
 
 interface CheckCondition {
@@ -92,4 +93,9 @@ export async function takeScreenshotAndUpload(el: HTMLElement) {
     const data = await uploadFile(canvasBlob)
     return data
   }
+}
+
+export function generateQRCode(id: string, url: string, width = 100) {
+  const ele = document.getElementById(id) as HTMLCanvasElement
+  return QRCode.toCanvas(ele, url, { width })
 }

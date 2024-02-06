@@ -5,6 +5,7 @@ import { useRoute } from 'vue-router'
 import HistoryArea from './HistoryArea.vue'
 import { useSaveWork } from './useSaveWork'
 import { usePublishWork } from './usePublishWork'
+import PublishForm from './PublishForm.vue'
 import { useEditorStore } from '@/store/editor/editor'
 import LText from '@/components/LText.vue'
 import LImage from '@/components/LImage.vue'
@@ -35,6 +36,7 @@ const workId = route.params.id as string
 const { saveLoading, saveWork } = useSaveWork()
 const canvasFix = ref(false)
 const { publish: publishWork, publishLoading } = usePublishWork()
+const showPublishForm = ref(false)
 
 onMounted(async () => {
   const res = await getMyWork(workId)
@@ -52,6 +54,7 @@ async function publish() {
   canvasFix.value = true
   await nextTick()
   await publishWork(el)
+  showPublishForm.value = true
   canvasFix.value = false
 }
 
@@ -100,6 +103,14 @@ function updatePosition(data: { left: number; top: number; id: string }) {
       </a-button>
     </div>
   </header>
+  <a-modal
+    v-model:visible="showPublishForm"
+    title="发布成功"
+    width="700px"
+    :footer="null"
+  >
+    <PublishForm />
+  </a-modal>
   <div class="editor [&>*]:m-2 flex justify-between h-[calc(100vh-3rem)] border-2 border-blue-400">
     <div class="border-2 border-yellow-400 component-list w-60">
       <h1>组件列表</h1>

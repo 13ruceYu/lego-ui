@@ -9,7 +9,7 @@ import { takeScreenshotAndUpload } from '@/utils/helper'
 export function usePublishWork() {
   const publishLoading = ref(false)
   const editorStore = useEditorStore()
-  const workId = useRoute().params.id as string
+  const workId = parseInt(useRoute().params.id as string)
   const { saveWork } = useSaveWork(false)
 
   async function publish(el: HTMLElement) {
@@ -26,8 +26,14 @@ export function usePublishWork() {
         await publishWork(workId)
         // get channel list
         const channels = await getWorkChannel(workId)
-        if (channels.list.length === 0)
-          await createChannel({ name: '默认', workId: parseInt(workId) })
+        if (channels.list.length === 0) {
+          const defaultChannel = { name: '默认', workId }
+          const { id } = await createChannel(defaultChannel)
+          editorStore.channels.push({ ...defaultChannel, id })
+        }
+        else {
+          editorStore.channels = channels.list.map(el => ({ id: el.id, name: el.name, workId }))
+        }
       }
     }
     catch (error) {
