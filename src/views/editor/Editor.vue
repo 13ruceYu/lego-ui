@@ -4,6 +4,7 @@ import { computed, nextTick, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import HistoryArea from './HistoryArea.vue'
 import { useSaveWork } from './useSaveWork'
+import { usePublishWork } from './usePublishWork'
 import { useEditorStore } from '@/store/editor/editor'
 import LText from '@/components/LText.vue'
 import LImage from '@/components/LImage.vue'
@@ -15,9 +16,7 @@ import PropsTable from '@/components/PropsTable.vue'
 import { defaultTextTemplates } from '@/constants/defaultTemplates'
 import { initHotKeys } from '@/plugins/hotKeys'
 import { initContextMenu } from '@/plugins/contextMenu'
-import { getMyWork, publishWork } from '@/api/modules/works'
-import { takeScreenshotAndUpload } from '@/utils/helper'
-import { createChannel, getWorkChannel } from '@/api/modules/channel'
+import { getMyWork } from '@/api/modules/works'
 
 interface compMap {
   [key: string]: object
@@ -35,7 +34,7 @@ const route = useRoute()
 const workId = route.params.id as string
 const { saveLoading, saveWork } = useSaveWork()
 const canvasFix = ref(false)
-const publishLoading = ref(false)
+const { publish: publishWork, publishLoading } = usePublishWork()
 
 onMounted(async () => {
   const res = await getMyWork(workId)
@@ -48,28 +47,12 @@ onMounted(async () => {
 })
 
 async function publish() {
-  publishLoading.value = true
   editorStore.setActive('')
   const el = document.getElementById('canvas-area') as HTMLElement
   canvasFix.value = true
   await nextTick()
-  // take screenshot and upload
-  const data = await takeScreenshotAndUpload(el)
-  if (data) {
-    // update page coverImg in store
-    editorStore.updatePage({ key: 'coverImg', value: data[0], isRoot: true })
-    // save work
-    await saveWork()
-    // publish work
-    await publishWork(workId)
-    // get channel list
-    const channels = await getWorkChannel(workId)
-    if (channels.list.length === 0)
-      await createChannel({ name: '默认', workId: parseInt(workId) })
-
-    canvasFix.value = false
-  }
-  publishLoading.value = true
+  await publishWork(el)
+  canvasFix.value = false
 }
 
 function addItem(props: any) {

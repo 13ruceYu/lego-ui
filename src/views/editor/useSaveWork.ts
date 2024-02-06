@@ -4,7 +4,7 @@ import { Modal } from 'ant-design-vue'
 import { updateMyWork } from '@/api/modules/works'
 import { useEditorStore } from '@/store/editor/editor'
 
-export function useSaveWork() {
+export function useSaveWork(sideEffect = true) {
   const saveLoading = ref(false)
   let timer: ReturnType<typeof setInterval>
   const editorStore = useEditorStore()
@@ -27,35 +27,37 @@ export function useSaveWork() {
     editorStore.isDirty = false
   }
 
-  onMounted(async () => {
-    timer = setInterval(() => {
-      if (editorStore.isDirty)
-        saveWork()
-    }, 1000 * 5)
-  })
-  onUnmounted(() => {
-    clearInterval(timer)
-  })
-  onBeforeRouteLeave((to, from, next) => {
-    if (editorStore.isDirty) {
-      Modal.confirm({
-        title: '作品还未保存，是否保存？',
-        okText: '保存',
-        okType: 'primary',
-        cancelText: '不保存',
-        onOk: async () => {
-          await saveWork()
-          next()
-        },
-        onCancel() {
-          next()
-        },
-      })
-    }
-    else {
-      next()
-    }
-  })
+  if (sideEffect) {
+    onMounted(async () => {
+      timer = setInterval(() => {
+        if (editorStore.isDirty)
+          saveWork()
+      }, 1000 * 5)
+    })
+    onUnmounted(() => {
+      clearInterval(timer)
+    })
+    onBeforeRouteLeave((to, from, next) => {
+      if (editorStore.isDirty) {
+        Modal.confirm({
+          title: '作品还未保存，是否保存？',
+          okText: '保存',
+          okType: 'primary',
+          cancelText: '不保存',
+          onOk: async () => {
+            await saveWork()
+            next()
+          },
+          onCancel() {
+            next()
+          },
+        })
+      }
+      else {
+        next()
+      }
+    })
+  }
 
   return { saveLoading, saveWork }
 }
