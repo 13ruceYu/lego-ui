@@ -9,7 +9,7 @@ import './styles/index.css'
 import 'ant-design-vue/dist/antd.css' // or 'ant-design-vue/dist/antd.less'
 import 'cropperjs/dist/cropper.css'
 
-export const baseH5URL = 'http://182.92.168.192:8082'
+export const baseH5URL = 'http://localhost:7001'
 
 const app = createApp(App)
 const pinia = createPinia()

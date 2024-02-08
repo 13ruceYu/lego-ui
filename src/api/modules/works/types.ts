@@ -27,8 +27,17 @@ export interface Template {
   'createdAt': string
 }
 
+export type MyWork = Omit<Template, 'coverImg' | 'isHot'>
+
 export interface TemplateListRes {
   list: Template[]
+  'count': number
+  'pageSize': number
+  'pageIndex': number
+}
+
+export interface MyWorkListRes {
+  list: MyWork[]
   'count': number
   'pageSize': number
   'pageIndex': number

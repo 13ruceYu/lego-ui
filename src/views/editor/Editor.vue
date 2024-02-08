@@ -6,6 +6,7 @@ import HistoryArea from './HistoryArea.vue'
 import { useSaveWork } from './useSaveWork'
 import { usePublishWork } from './usePublishWork'
 import PublishForm from './PublishForm.vue'
+import PreviewForm from './PreviewForm.vue'
 import { useEditorStore } from '@/store/editor/editor'
 import LText from '@/components/LText.vue'
 import LImage from '@/components/LImage.vue'
@@ -37,6 +38,7 @@ const { saveLoading, saveWork } = useSaveWork()
 const canvasFix = ref(false)
 const { publish: publishWork, publishLoading } = usePublishWork()
 const showPublishForm = ref(false)
+const showPreviewForm = ref(false)
 
 onMounted(async () => {
   const res = await getMyWork(workId)
@@ -95,6 +97,9 @@ function updatePosition(data: { left: number; top: number; id: string }) {
       </router-link>{{ page.title }}
     </div>
     <div>
+      <a-button @click="showPreviewForm = true">
+        预览和设置
+      </a-button>
       <a-button :loading="publishLoading" @click="publish">
         发布
       </a-button>
@@ -111,6 +116,7 @@ function updatePosition(data: { left: number; top: number; id: string }) {
   >
     <PublishForm />
   </a-modal>
+  <PreviewForm v-if="showPreviewForm" v-model:visible="showPreviewForm" />
   <div class="editor [&>*]:m-2 flex justify-between h-[calc(100vh-3rem)] border-2 border-blue-400">
     <div class="border-2 border-yellow-400 component-list w-60">
       <h1>组件列表</h1>

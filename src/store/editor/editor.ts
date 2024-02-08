@@ -44,6 +44,7 @@ export interface PageData {
   coverImg?: string
   props?: PageProps
   uuid?: string
+  setting?: { [key: string]: any }
 }
 
 export interface ChannelProps {
@@ -75,6 +76,7 @@ export interface IUploadPayload {
   value: any
   id?: string
   isRoot?: boolean
+  isSetting?: boolean
 }
 
 export interface UpdateComponentData {
@@ -368,12 +370,18 @@ export const useEditorStore = defineStore({
         }
       }
     },
-    updatePage({ key, value, isRoot }: IUploadPayload) {
+    updatePage({ key, value, isRoot, isSetting }: IUploadPayload) {
       this.isDirty = true
-      if (isRoot)
+      if (isRoot) {
         this.page[key as keyof PageData] = value
-      else
-        this.page.props && (this.page.props[key as keyof PageProps] = value)
+      }
+      else if (isSetting) {
+        this.page.setting = {
+          ...this.page.setting,
+          [key]: value,
+        }
+      }
+      else { this.page.props && (this.page.props[key as keyof PageProps] = value) }
     },
     undo() {
       // never undo before

@@ -8,6 +8,13 @@ export function getMyWork(workId: string) {
   })
 }
 
+export function getMyWorkList() {
+  return axios({
+    url: '/works',
+    method: 'get',
+  })
+}
+
 export function updateMyWork(workId: string, data: WorkUpdatePayload) {
   return axios({
     url: `/works/${workId}`,
