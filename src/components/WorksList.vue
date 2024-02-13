@@ -3,7 +3,7 @@ import type { PropType } from 'vue'
 import { defineComponent } from 'vue'
 import { CopyOutlined, DeleteOutlined, DownloadOutlined, EditOutlined, EllipsisOutlined } from '@ant-design/icons-vue'
 import { Modal } from 'ant-design-vue'
-import type { TemplateProps } from '@/store/template'
+import type { TemplateProps } from '@/store/template/template'
 
 export default defineComponent({
   name: 'WorksList',
