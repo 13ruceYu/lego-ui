@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, reactive, ref, watch } from 'vue'
-import { LockOutlined, UserOutlined } from '@ant-design/icons-vue'
+import Icon, { GithubOutlined, LockOutlined, UserOutlined } from '@ant-design/icons-vue'
 import { Form } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
 import { getVerificationCode } from '@/api/modules/login'
@@ -60,6 +60,10 @@ async function getCode() {
   window.$message.success('验证码已发送，请注意查收')
   navigator.clipboard.writeText(res.veriCode)
 }
+
+function oAuthGithub() {
+  window.open(`${import.meta.env.VITE_APP_BASE_URL}/api/users/passport/github`, '_blank', 'height=500,width=500,top=0,left=0')
+}
 </script>
 
 <template>
@@ -104,6 +108,9 @@ async function getCode() {
             {{ counter === 60 ? '获取验证码' : `${counter}秒后重发` }}
           </a-button>
         </a-form-item>
+        <div>
+          <Icon :component="GithubOutlined" style="font-size: 24px" class="cursor-pointer" @click="oAuthGithub" />
+        </div>
       </a-form>
     </a-col>
   </a-row>

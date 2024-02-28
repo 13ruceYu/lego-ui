@@ -24,6 +24,12 @@ export const useUserStore = defineStore({
       axios.defaults.headers.common.Authorization = `Bearer ${token}`
       localStorage.setItem('token', token)
     },
+    loginByOauth(token: string) {
+      this.token = token
+      axios.defaults.headers.common.Authorization = `Bearer ${token}`
+      localStorage.setItem('token', token)
+      this.fetchCurrentUser()
+    },
     async fetchCurrentUser() {
       const res = await getUserInfo()
       this.isLogin = true
