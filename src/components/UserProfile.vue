@@ -35,13 +35,18 @@ export default defineComponent({
   </a-button>
   <div v-else>
     <a-dropdown-button class="user-profile-component">
-      <router-link to="/setting">
+      <router-link to="/works">
         {{ userStore.data.username }}
       </router-link>
       <template #overlay>
         <a-menu class="user-profile-dropdown">
           <a-menu-item key="0" @click="logout">
             登出
+          </a-menu-item>
+          <a-menu-item key="1">
+            <router-link to="setting">
+              个人中心
+            </router-link>
           </a-menu-item>
         </a-menu>
       </template>

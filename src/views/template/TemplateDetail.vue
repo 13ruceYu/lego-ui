@@ -1,12 +1,13 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
-import { getTemplateById } from '@/api/modules/works'
+import { useRoute, useRouter } from 'vue-router'
+import { createWorkByTemplate, getTemplateById } from '@/api/modules/works'
 import type { Template } from '@/api/modules/works/types'
 
 export default defineComponent({
   setup() {
     const route = useRoute()
+    const router = useRouter()
     const currentId = ref<string | null>(route.params.id as string | null)
     const template = ref<Template | null>(null)
 
@@ -17,41 +18,53 @@ export default defineComponent({
       }
     }
 
+    async function useTemplate() {
+      // use template
+      // 1. copy current template data
+      // 2. use template data create new work
+      // 3. jump to editor page
+      if (currentId.value) {
+        const res = await createWorkByTemplate(currentId.value)
+        const { id } = res
+        router.push(`/editor/${id}`)
+      }
+    }
+
     onMounted(fetchTemplate)
 
     return {
       route,
       template,
+      useTemplate,
     }
   },
 })
 </script>
 
 <template>
-  <div class="work-detail-container">
-    <a-row v-if="template" type="flex" justify="center">
-      <a-col :span="8" class="cover-img">
-        <img :src="template.coverImg" alt="">
+  <div class="pt-8">
+    <a-row v-if="template" type="flex" justify="center" :gutter="36">
+      <a-col :span="8">
+        <!-- <img :src="template.coverImg" alt=""> -->
+        <img v-if="template.coverImg" :src="template.coverImg">
+        <img v-else src="http://typescript-vue.oss-cn-beijing.aliyuncs.com/vue-marker/5f81cca3f3bf7a0e1ebaf885.png">
       </a-col>
       <a-col :span="8">
         <h2>{{ template.title }}</h2>
-        <p>{{ template.title }}</p>
+        <p>{{ template.desc }}</p>
         <div class="author">
           <a-avatar>V</a-avatar>
           该模版由 <b>{{ template.author }}</b> 创作
         </div>
         <div class="bar-code-area">
           <span>扫一扫，手机预览</span>
-          <div />
         </div>
         <div class="use-button">
-          <router-link to="/editor">
-            <a-button
-              type="primary" size="large"
-            >
-              使用模版
-            </a-button>
-          </router-link>
+          <a-button
+            type="primary" size="large" @click="useTemplate"
+          >
+            使用模版
+          </a-button>
           <a-button
             size="large"
           >
@@ -62,24 +75,3 @@ export default defineComponent({
     </a-row>
   </div>
 </template>
-
-<style scoped>
-.work-detail-container {
-  margin-top:50px;
-}
-.cover-img {
-  margin-right: 30px;
-}
-.cover-img img {
-  width: 100%;
-}
-.use-button {
-  margin: 30px 0;
-}
-.ant-avatar {
-  margin-right: 10px;
-}
-.bar-code-area {
-  margin: 20px 0;
-}
-</style>

@@ -9,6 +9,12 @@ const basicPage: RouteRecordRaw[] = [
       { path: '', name: 'home', component: () => import('@/views/home/Home.vue'), meta: { title: '欢迎来到慕课乐高' } },
       { path: 'template/:id', name: 'template', component: () => import('@/views/template/TemplateDetail.vue'), meta: { title: '模版详情' } },
       { path: 'works', name: 'works', component: () => import('@/views/work/Work.vue'), meta: { title: '我的作品', requiredLogin: true } },
+      {
+        path: '/setting',
+        name: 'setting',
+        component: () => import('@/views/setting/Setting.vue'),
+        meta: { title: '设置', requiredLogin: true },
+      },
     ],
   },
   {
@@ -33,11 +39,6 @@ const basicPage: RouteRecordRaw[] = [
     path: '/oauth',
     name: 'oauth',
     component: () => import('@/views/oauth/Oauth.vue'),
-  },
-  {
-    path: '/setting',
-    name: 'setting',
-    component: () => import('@/views/setting/Setting.vue'),
   },
 ]
 

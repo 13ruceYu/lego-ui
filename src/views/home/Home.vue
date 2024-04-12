@@ -9,14 +9,13 @@ export default defineComponent({
   },
   setup() {
     const templateStore = useTemplateStore()
-    const testData = computed(() => templateStore.data)
-    // const isLoading = computed(() => store.getters.isOpLoading('fetchTemplates'))
+    const templateData = computed(() => templateStore.data)
     const isLoading = false
     onMounted(() => {
       templateStore.getTemplates()
     })
     return {
-      testData,
+      templateData,
       isLoading,
     }
   },
@@ -28,7 +27,7 @@ export default defineComponent({
     <h1 v-if="isLoading">
       templates is Loading!
     </h1>
-    <TemplateList :list="testData" />
+    <TemplateList :list="templateData" />
   </div>
 </template>
 

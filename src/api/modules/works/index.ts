@@ -43,3 +43,21 @@ export function publishWork(workId: number) {
     url: `/works/publish/${workId}`,
   })
 }
+
+export function createWork(data: any) {
+  return axios({
+    method: 'post',
+    url: '/works',
+    data,
+  })
+}
+
+export function createWorkByTemplate(workId: string) {
+  return axios({
+    method: 'post',
+    url: '/works/by-template',
+    data: {
+      id: workId,
+    },
+  })
+}

@@ -19,6 +19,7 @@ interface UserRes {
   username?: string
   id?: string
   phoneNumber?: string
+  email?: string
   nickName?: string
   description?: string
   updatedAt?: string

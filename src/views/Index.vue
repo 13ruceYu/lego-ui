@@ -13,15 +13,15 @@ export default defineComponent({
 <template>
   <div class="homepage-container">
     <a-layout :style="{ background: '#fff' }">
-      <a-layout-header class="header">
+      <a-layout-header class="flex justify-between">
         <div class="page-title">
-          <router-link to="/">
-            Home
+          <router-link to="/" class="font-bold text-lg">
+            MOCK-LEGO
           </router-link>
         </div>
         <UserProfile />
       </a-layout-header>
-      <a-layout-content class="home-layout">
+      <a-layout-content>
         <router-view />
       </a-layout-content>
     </a-layout>
@@ -30,14 +30,3 @@ export default defineComponent({
     </a-layout-footer>
   </div>
 </template>
-
-<style>
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.page-title {
-  color: #fff;
-}
-</style>
